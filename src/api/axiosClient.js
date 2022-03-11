@@ -1,6 +1,6 @@
 import axios from "axios";
 import queryString from "query-string";
-import Cookies from "js-cookie"
+import Cookies from "js-cookie";
 const REACT_APP_API_URL = "http://localhost:9191/api/";
 
 const axiosClient = axios.create({
@@ -12,7 +12,8 @@ const axiosClient = axios.create({
 });
 
 axiosClient.interceptors.request.use(async (config) => {
-  const token = await Cookies.get("token")
+  const token = await Cookies.get("token");
+  console.log(token);
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -28,7 +29,7 @@ axiosClient.interceptors.response.use(
     return response;
   },
   (error) => {
-  Cookies.remove("token")
+     Cookies.remove("token");
     throw error;
   }
 );

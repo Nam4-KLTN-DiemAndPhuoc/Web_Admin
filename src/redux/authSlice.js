@@ -26,45 +26,48 @@ export const login = createAsyncThunk(
 
 export const refreshToken = createAsyncThunk(
   "refreshToken",
-  async (params, thunkAPI) => {
+  async (params, { rejectWithValue }) => {
     try {
       const res = await authApi.refreshToken();
+
       await Cookies.set("token", res.token);
       return res;
     } catch (error) {
-      console.log(error);
+      return rejectWithValue(error.response.data);
     }
   }
 );
+export const logout = createAsyncThunk("logout", async (params, thunkAPI) => {
+  try {
+    await Cookies.remove("token");
+  } catch (error) {
+    console.log(error);
+  }
+});
 
 const authSlice = createSlice({
   name: "auth",
   initialState,
-  reducers: {
-    // thay doi state
-    logout: async (state, action) => {
-      Cookies.remove("token");
-    },
-    removeErrorMessage: async (state, action) => {
-      state.errorMessage=""
-    },
-  },
+
   extraReducers: {
     [login.pending]: (state, action) => {
       console.log("pending");
     },
     [login.fulfilled]: (state, action) => {
-      console.log("fullfield");
-      console.log(action.payload);
       state.token = action.payload.token;
       state.user = action.payload.user;
     },
     [login.rejected]: (state, action) => {
-    
       state.errorMessage = action.payload;
-      console.log("reject",  state.errorMessage);
+      console.log("reject", state.errorMessage);
     },
-
+    // logout
+    [logout.pending]: (state, action) => {},
+    [logout.fulfilled]: (state, action) => {
+      state.token = null;
+      state.user = null;
+    },
+    [logout.rejected]: (state, action) => {},
     // refreshToken
     [refreshToken.pending]: (state, action) => {},
     [refreshToken.fulfilled]: (state, action) => {
@@ -74,11 +77,11 @@ const authSlice = createSlice({
       }
     },
     [refreshToken.rejected]: (state, action) => {
+      console.log(action.payload);
       console.log("Token hết hạn vui lòng đăng nhập lại");
     },
   },
 });
 
 const { reducer, actions } = authSlice;
-export const { logout, removeErrorMessage } = actions;
 export default reducer;
