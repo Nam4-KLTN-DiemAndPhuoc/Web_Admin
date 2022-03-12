@@ -24,6 +24,7 @@ import Content from "../../components/Content";
 import UserTable from "../../components/Table/UserTable";
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import { logout } from "../../redux/authSlice";
+import { getByStatus } from "../../redux/orderSlice";
 const drawerWidth = 240;
 
 function Dashboard(props) {
@@ -34,6 +35,17 @@ function Dashboard(props) {
   const [check, setCheck] = React.useState("Đơn hàng");
 
 
+React.useEffect(() => {
+  
+    dispatch(getByStatus("ORDER_IN_PROGRESS",
+      ));
+      dispatch(getByStatus("PREPARING_TO_SHIP"
+    ));
+      dispatch(getByStatus("DELIVERED"
+     ));
+      dispatch(getByStatus( "CANCELED"
+     ));
+  }, [dispatch]);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -41,7 +53,7 @@ function Dashboard(props) {
 
   const handleClick = (text) => {
     if (text === "Đơn hàng") {
-    
+      setCheck("Đơn hàng")
       console.log("DH", text);
     } else if (text === "Khách hàng") {
       setCheck("Khách hàng")
@@ -209,8 +221,12 @@ function Dashboard(props) {
         }}
       >
         <Toolbar />
-        {check=="Khách hàng" ? <UserTable /> :<Content />
-       
+        {
+        check=="Khách hàng" ? <UserTable /> :(
+          check=="Đơn hàng"?<Content /> :(<div>chua</div>)
+        )
+          
+        
         }
         
 
