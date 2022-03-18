@@ -12,13 +12,11 @@ export const login = createAsyncThunk(
   async (params, { rejectWithValue }) => {
     try {
       const res = await authApi.login(params);
-      console.log(res);
 
       await Cookies.set("token", res.token);
 
       return res;
     } catch (error) {
-      console.log("error", error);
       return rejectWithValue(error.response.data);
     }
   }
@@ -51,7 +49,6 @@ const authSlice = createSlice({
 
   extraReducers: {
     [login.pending]: (state, action) => {
-      console.log("pending");
     },
     [login.fulfilled]: (state, action) => {
       state.token = action.payload.token;
@@ -59,7 +56,6 @@ const authSlice = createSlice({
     },
     [login.rejected]: (state, action) => {
       state.errorMessage = action.payload;
-      console.log("reject", state.errorMessage);
     },
     // logout
     [logout.pending]: (state, action) => {},
@@ -77,7 +73,6 @@ const authSlice = createSlice({
       }
     },
     [refreshToken.rejected]: (state, action) => {
-      console.log(action.payload);
       console.log("Token hết hạn vui lòng đăng nhập lại");
     },
   },

@@ -11,10 +11,11 @@ import { useDispatch, useSelector } from "react-redux";
 import SearchForm from "../SearchForm";
 import { Button } from "@mui/material";
 import { deleteUser } from "../../redux/userSlice";
+import { width } from "@mui/system";
 
 const columns = [
-  { id: "userName", label: "Name", minWidth: 170 },
-  { id: "phone", label: "Phone Number", minWidth: 100 },
+  { id: "userName", label: "Họ Tên", minWidth: 170 },
+  { id: "phone", label: "Số điện thoại", minWidth: 100 },
   {
     id: "email",
     label: "Email",
@@ -24,14 +25,14 @@ const columns = [
   },
   {
     id: "status",
-    label: "Status",
+    label: "Trạng thái",
     minWidth: 170,
     align: "right",
     // format: (value) => value.toLocaleString("en-US"),
   },
   {
     id: "action",
-    label: "Action",
+    label: "Hành động",
     minWidth: 170,
     align: "right",
     // format: (value) => value.toLocaleString("en-US"),
@@ -41,7 +42,6 @@ const columns = [
 
 export default function UserTable() {
   const { users } = useSelector((state) => state.users);
-  console.log("users: ", users);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const dispatch= useDispatch();
@@ -80,7 +80,8 @@ export default function UserTable() {
   }
   return (
     <Paper sx={{ width: "100%" }}>
-      <SearchForm />
+      <SearchForm  />
+      
       <TableContainer sx={{ maxHeight: 440 }}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
@@ -106,7 +107,6 @@ export default function UserTable() {
           <TableBody>
             {users?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row) => {
-                console.log("row", row);
                 return (
                   <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
                     <TableCell  align='left'>

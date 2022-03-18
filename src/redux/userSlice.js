@@ -12,11 +12,9 @@ export const getAll = createAsyncThunk(
   async (params, { rejectWithValue }) => {
     try {
       const res = await userApi.getAll();
-      console.log(res);
 
       return res;
     } catch (error) {
-      console.log("error", error.response);
       return rejectWithValue(error.response.data);
     }
   }
@@ -38,11 +36,9 @@ export const searchUser = createAsyncThunk(
   async (params, { rejectWithValue }) => {
     try {
       const res = await userApi.search(params);
-      console.log(res);
 
       return res;
     } catch (error) {
-      console.log("error", error.response);
       return rejectWithValue(error.response.data);
     }
   }
@@ -53,40 +49,29 @@ const userSlice = createSlice({
 
   extraReducers: {
     [getAll.pending]: (state, action) => {
-      console.log("pending");
     },
     [getAll.fulfilled]: (state, action) => {
-      console.log("fullfield");
-      console.log(action.payload);
       state.users = action.payload;
-      console.log(state.users);
     },
     [getAll.rejected]: (state, action) => {
       state.errorMessage = action.payload;
-      console.log("reject", action.payload);
     },
     [deleteUser.pending]: (state, action) => {
-      console.log("pending");
     },
     [deleteUser.fulfilled]: (state, action) => {
-      console.log("fullfield");
       const u = state.users.find((user) => user.id == action.payload.id);
       u.deletedAt = action.payload.deletedAt;
     },
     [deleteUser.rejected]: (state, action) => {
       state.errorMessage = action.payload;
-      console.log("reject", action.payload);
     },
     [searchUser.pending]: (state, action) => {
-      console.log("pending");
     },
     [searchUser.fulfilled]: (state, action) => {
-      console.log("fullfield");
       state.users = action.payload;
     },
     [deleteUser.rejected]: (state, action) => {
       state.errorMessage = action.payload;
-      console.log("reject", action.payload);
     },
   },
 });

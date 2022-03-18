@@ -13,13 +13,10 @@ export const getByStatus = createAsyncThunk(
   "getByStatus",
   async (params, { rejectWithValue }) => {
     try {
-      console.log("ppp", params);
       const res = await orderApi.getByStatus(params);
-      console.log(res);
 
       return res;
     } catch (error) {
-      console.log("error", error.response);
       return rejectWithValue(error.response.statusText);
     }
   }
@@ -29,11 +26,9 @@ export const getOrderDetailByOrderId = createAsyncThunk(
   async (params, { rejectWithValue }) => {
     try {
       const res = await orderApi.getOrderDetailByOrderId(params);
-      console.log("details: ", res);
 
       return res;
     } catch (error) {
-      console.log("error", error.response);
       return rejectWithValue(error.response.statusText);
     }
   }
@@ -44,11 +39,9 @@ export const updateStatus = createAsyncThunk(
     try {
       const res = await orderApi.updateStatus(params);
 
-      console.log(res);
 
       return res;
     } catch (error) {
-      console.log("error", error.response);
       return rejectWithValue(error.response.statusText);
     }
   }
@@ -72,7 +65,6 @@ const orderSlice = createSlice({
     },
     [getByStatus.rejected]: (state, action) => {
       state.errorMessage = action.payload;
-      console.log(action.payload);
     },
 
     [getOrderDetailByOrderId.pending]: (state, action) => {},
@@ -98,7 +90,6 @@ const orderSlice = createSlice({
         );
         state.prepare_to_ship_order = prepare_to_ship_;
       } else if (action.payload.order.status === "CANCELED") {
-        console.log(action.payload);
 
         state.canceled_order.push(action.payload);
         const in_progress = state.in_progress_order.filter(

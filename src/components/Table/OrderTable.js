@@ -14,7 +14,7 @@ import Paper from "@mui/material/Paper";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import { useDispatch, useSelector } from "react-redux";
-import { Button, FormControl, InputLabel, MenuItem, Select, TablePagination } from "@mui/material";
+import { Autocomplete, Button, FormControl, InputLabel, MenuItem, Select, TablePagination, TextField } from "@mui/material";
 import { getOrderDetailByOrderId, updateStatus } from "../../redux/orderSlice";
 import moment from "moment";
 
@@ -104,6 +104,9 @@ function Row(props) {
           
         </Select>
       </FormControl>
+
+
+
           <Button onClick={(id) => changeStatus(row)}>Cập nhật</Button>
 
     </Box>
@@ -213,7 +216,6 @@ export default function OrderTable({ data }) {
       ? delivered_order
       : canceled_order;
      
-  // console.log("data ", result);
 
 
 
@@ -247,7 +249,6 @@ export default function OrderTable({ data }) {
             result
               ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row) => {
-                console.log("rrr: ", row)
                 var x = {
                   id: row?.order?.id,
                   CustomerName: row?.user?.userName,

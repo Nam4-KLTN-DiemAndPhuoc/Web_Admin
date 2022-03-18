@@ -6,6 +6,7 @@ import Login from './Login';
 
 export default function Root() {
     const { user, token } = useSelector((state) => state.auth);
+    console.log(token)
   return (
     <BrowserRouter>
       <Routes>

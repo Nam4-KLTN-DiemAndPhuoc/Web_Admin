@@ -27,15 +27,9 @@ export default function Login() {
     };
 
     const res = await dispatch(login(data));
-    console.log("XX", errorMessage);
 
-    // if (errorMessage != null) {
-    //   alert(errorMessage);
-    //   dispatch(removeErrorMessage())
-    // } else {
       navigate("/", (require = "true"));
 
-    // }
   };
   return (
     <AuthLaylout>

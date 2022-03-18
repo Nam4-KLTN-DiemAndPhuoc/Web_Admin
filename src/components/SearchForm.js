@@ -19,7 +19,7 @@ export default function SearchForm() {
   return (
     <Paper
       component="form"
-      sx={{ p: "2px 4px", display: "flex", alignItems: "center", width: 1250 }}
+      sx={{ p: "2px 4px", display: "flex", alignItems: "center" }}
     >
       <IconButton sx={{ p: "10px" }} aria-label="menu"></IconButton>
       <InputBase
@@ -27,7 +27,6 @@ export default function SearchForm() {
         placeholder="Search "
         inputProps={{ "aria-label": "search " }}
         onChange={(event) => {
-          console.log(event.target.value);
           setText(event.target.value);
         }}
         onClick={handleClick}

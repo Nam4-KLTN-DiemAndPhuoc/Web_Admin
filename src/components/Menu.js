@@ -17,17 +17,13 @@ import { getAll } from "../redux/userSlice";
       
           if (text === "Đơn hàng") {
           
-            console.log("DH", text);
           } else if (text === "Khách hàng") {
             dispatch(getAll());
             
           
           
-            console.log("DH2", text);
           } else if (text === "Nhà cung cấp") {
-            console.log("DH2", text);
           } else if (text === "Sản phẩm") {
-            console.log("DH2", text);
           }
         };
       
