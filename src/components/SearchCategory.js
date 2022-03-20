@@ -10,6 +10,7 @@ import {
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { openModal } from "../redux/modalSlice";
+import AddProductModal from "./modal/AddProductModal";
 import {
   findByCategoryAndSupplier,
   findByCategoryAndSupplierAndName,
@@ -169,6 +170,7 @@ export default function SearchCategory() {
           <SearchIcon />
         </IconButton>
       </Paper>
+      <AddProductModal check={isOpen} />
     </div>
   );
 }
