@@ -6,13 +6,15 @@ import productSlice from "./productSlice";
 
 import { combineReducers } from "redux";
 import modalSlice from "./modalSlice";
+import dialogSlice from "./dialogSlice";
 
 const rootReducer = combineReducers({
   auth: authSlice,
   users:userSlice,
   orders:orderSlice,
   products:productSlice,
-  modal: modalSlice
+  modal: modalSlice,
+  dialog:dialogSlice
 });
 
 const store = configureStore({ reducer: rootReducer });

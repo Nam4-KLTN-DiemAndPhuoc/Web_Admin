@@ -13,6 +13,7 @@ import AddCircleOutlinedIcon from "@mui/icons-material/AddCircleOutlined";
 
 import {
   Autocomplete,
+  Dialog,
   FormControl,
   IconButton,
   InputLabel,
@@ -25,9 +26,20 @@ import {
 import TextFieldCustom from "../TextFieldCustom";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import styled from "@emotion/styled";
-import { addAttribute, addProduct, uploadFile } from "../../redux/productSlice";
+import {
+  addAttribute,
+  addListImage,
+  addProduct,
+  uploadFile,
+} from "../../redux/productSlice";
 import AddSupplierModal from "./AddSupplierModal";
 import AddCategoryModal from "./AddCategoryModal";
+import {
+  isAddAttributed,
+  openDialog,
+  unAddAttributed,
+} from "../../redux/dialogSlice";
+import MyDialog from "../alert/MyDialog";
 
 const Input = styled("input")({
   display: "none",
@@ -54,32 +66,47 @@ function ChildModal({ params }) {
   const [m, setM] = React.useState(0);
   const [l, setL] = React.useState(0);
   const [xl, setXL] = React.useState(0);
-  const {product}= useSelector(state=>state.products)
+  const { product } = useSelector((state) => state.products);
+  const { isOpen } = useSelector((s) => s.dialog);
 
   const handleOpen = async () => {
     setOpen(true);
 
-    if (params?.avatar != null) {
-      console.log("aaa");
+    if (params?.images.length > 0) {
       const url = "http://localhost:9191/api/user-service/auth/upload";
-      let formData = new FormData();
-      formData.append("file", params.avatar);
-      console.log("formData ", formData);
-      const config = {
-        headers: {
-          "content-type": "multipart/form-data",
-        },
-      };
-      const res = await post(url, formData, config);
+
+      var files = [];
+      for (let i = 0; i < params.images.length; i++) {
+        console.log(params.images[i]);
+        var fd = new FormData();
+        fd.append("file", params.images[i]);
+        const config = {
+          headers: {
+            "content-type": "multipart/form-data",
+          },
+        };
+        const res = await post(url, fd, config);
+        files.push(res);
+      }
+      console.log(files);
       const data = {
         name: params.name,
         price: params.price,
-        avatar: res.data,
+        avatar: files[0].data,
+
         description: params.description,
         categoryId: params.categoryId,
         supplierId: params.supplierId,
       };
-      dispatch(addProduct(data));
+      const p = await dispatch(addProduct(data));
+
+      for (let j = 0; j < files.length; j++) {
+        let x = {
+          url: files[j].data,
+          product: p.payload.product,
+        };
+        dispatch(addListImage(x));
+      }
     }
   };
   const handleClose = () => {
@@ -89,22 +116,34 @@ function ChildModal({ params }) {
   const handleSaveAttribute = () => {
     if (s > 0 || m > 0 || l > 0 || xl > 0) {
       const params = [
-        { size: "S", amount: s ,product:product.product},
-        { size: "M", amount: m,product:product.product },
-        { size: "L", amount: l,product:product.product },
-        { size: "XL", amount: xl,product:product.product },
+        { size: "S", amount: s, product: product.product },
+        { size: "M", amount: m, product: product.product },
+        { size: "L", amount: l, product: product.product },
+        { size: "XL", amount: xl, product: product.product },
       ];
 
-      console.log(params)
-      dispatch(addAttribute(params))
+      dispatch(addAttribute(params));
+      dispatch(isAddAttributed());
+      dispatch(openDialog());
     }
-    handleClose()
+    handleClose();
   };
+  const {isAddAttributed}= useSelector(s=>s.dialog)
+  console.log(" thuoc tinh san pham ", isAddAttributed)
+
   return (
     <React.Fragment>
-      <Button variant="contained" onClick={handleOpen}>
-        Thêm thuộc tính
-      </Button>
+      <MyDialog
+        check={isOpen}
+        title="Thông báo"
+        content="Thêm thuộc tính sản phẩm thành công !"
+      />
+      {isAddAttributed == false && (
+        <Button variant="contained" onClick={handleOpen}>
+          Thêm thuộc tính
+        </Button>
+      )}
+
       <Modal
         hideBackdrop
         open={open}
@@ -181,11 +220,12 @@ export default function AddProductModal({ check }) {
   const [image, setImage] = React.useState({});
   const [supplierId, setSupplierId] = React.useState();
   const [categoryId, setCategoryId] = React.useState();
+  const [fileArray, setFileArray] = React.useState([]);
+  const [previewImages, setPreviewImages] = React.useState([]);
+  const { isAddAttributed } = useSelector((s) => s.dialog);
 
-  const handleOpen = () => {
-    setOpen = !isOpen;
-  };
   const handleClose = () => {
+    dispatch(unAddAttributed());
     dispatch(openModal());
     setFile("");
     setPrice(0);
@@ -193,16 +233,19 @@ export default function AddProductModal({ check }) {
   };
 
   const onChangeFile = (e) => {
-    if (e.target.files[0]) {
-      setFile(URL.createObjectURL(e.target.files[0]));
-      console.log("fiel  ", URL.createObjectURL(e.target.files[0]));
-      setImage(e.target.files[0]);
-    } else {
-      setFile("");
-      setImage(null);
+    let images = [];
+
+    for (let i = 0; i < e.target.files.length; i++) {
+      images.push(URL.createObjectURL(e.target.files[i]));
     }
+    setImage(e.target.files[0]);
+    setPreviewImages(images);
+    setFileArray(e.target.files);
   };
+  const dialog = useSelector((s) => s.dialog);
   const handleSave = () => {
+    dispatch(openDialog());
+    dispatch(unAddAttributed());
     dispatch(openModal());
     setFile("");
     setPrice(0);
@@ -228,8 +271,14 @@ export default function AddProductModal({ check }) {
   const handleAddSupplier = () => {
     dispatch(openSupplierModal());
   };
+  console.log("san pham ", isAddAttributed)
   return (
     <div>
+      <MyDialog
+        check={dialog.isOpen}
+        title="Thông báo"
+        content="Thêm sản phẩm thành công! "
+      />
       <Modal
         open={check}
         aria-labelledby="parent-modal-title"
@@ -326,17 +375,22 @@ export default function AddProductModal({ check }) {
               onChange={(e) => setDescription(e.target.value)}
             />
             <Stack direction="row" alignItems="center" spacing={2}>
-              {file != "" && (
+              {/* {file != "" && (
                 <img id="output" src={file} width="100" height="100" />
-              )}
+              )} */}
+
+              {(previewImages || []).map((url) => (
+                <img src={url} width="80" height="80" alt="..." />
+              ))}
               <form encType="multipart/form-data" action="">
                 <Button variant="contained" component="label">
-                  Thêm hình ảnh
+                  Thêm ảnh
                   <input
                     type="file"
                     hidden
                     accept="image/*"
                     onChange={(e) => onChangeFile(e)}
+                    multiple
                   />
                 </Button>
               </form>
@@ -350,14 +404,18 @@ export default function AddProductModal({ check }) {
                 name: name,
                 price: price,
                 avatar: image,
+                images: fileArray,
                 description: description,
                 supplierId: supplierId,
                 categoryId: categoryId,
               }}
             />
-            <Button variant="contained" color="success" onClick={handleSave}>
-              Lưu
-            </Button>
+            {isAddAttributed == true && (
+              <Button variant="contained" color="success" onClick={handleSave}>
+                Lưu
+              </Button>
+            )}
+
             <Button variant="contained" color="error" onClick={handleClose}>
               Đóng
             </Button>

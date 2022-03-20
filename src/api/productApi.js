@@ -36,6 +36,26 @@ const productApi = {
     const url = `product-service/attribute/product/${id}`;
     return axiosClient.get(url);
   },
+  addListImage: (params) => {
+    const url = `product-service/image`;
+    return axiosClient.post(url,params);
+  },
+  addCategory: (params) => {
+    const url = `category-service/admin/add`;
+    return axiosClient.post(url,params);
+  },
+  addSupplier: (params) => {
+    const url = `supplier-service/admin/add`;
+    return axiosClient.post(url,params);
+  },
+  findByCategoryAndSupplier: (params) => {
+    const url = `product-service/product/category/${params.idCategory}/supplier/${params.idSupplier}?page=${params.page}&limit=5`;
+    return axiosClient.get(url);
+  },
+  findByCategoryAndSupplierAndName: (params) => {
+    const url = `product-service/product/category/${params.idCategory}/supplier/${params.idSupplier}/name?name=${params.name}&page=${params.page}&limit=5`;
+    return axiosClient.get(url);
+  },
 };
 
 export default productApi;

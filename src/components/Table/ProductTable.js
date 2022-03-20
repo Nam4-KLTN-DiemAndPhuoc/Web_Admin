@@ -27,12 +27,20 @@ import {
 } from "@mui/material";
 import { getOrderDetailByOrderId, updateStatus } from "../../redux/orderSlice";
 import moment from "moment";
-import { deleteProduct, getAllProduct, getAttribute } from "../../redux/productSlice";
+import {
+  addPage,
+  deleteProduct,
+  findByCategoryAndSupplier,
+  findByCategoryAndSupplierAndName,
+  getAllProduct,
+  getAttribute,
+  subPage,
+} from "../../redux/productSlice";
 
 function Row(props) {
   const { row } = props;
   const [open, setOpen] = React.useState(false);
-  const {user}=useSelector(state=>state.auth)
+  const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const handleClick = (id) => {
     dispatch(getAttribute(id));
@@ -68,16 +76,14 @@ function Row(props) {
     }
   };
 
-  const handleUpdate=()=>{
-    
-  }
-  const handleDelete=(id)=>{
-    const data={
-      id:id,
-      userId:user.id
-    }
-    dispatch(deleteProduct(data))
-  }
+  const handleUpdate = () => {};
+  const handleDelete = (id) => {
+    const data = {
+      id: id,
+      userId: user.id,
+    };
+    dispatch(deleteProduct(data));
+  };
 
   return (
     <React.Fragment>
@@ -104,8 +110,12 @@ function Row(props) {
 
         <TableCell>
           <Stack spacing={2} direction="row">
-            <Button variant="contained" onClick={id=>handleUpdate(id)}  >Cập nhật</Button>
-            <Button variant="outlined" onClick={id=>handleDelete(row.id)}>Xóa</Button>
+            <Button variant="contained" onClick={(id) => handleUpdate(id)}>
+              Cập nhật
+            </Button>
+            <Button variant="outlined" onClick={(id) => handleDelete(row.id)}>
+              Xóa
+            </Button>
           </Stack>
         </TableCell>
       </TableRow>
@@ -134,7 +144,7 @@ function Row(props) {
                   {row.details.map((historyRow, i) => (
                     <TableRow>
                       <TableCell component="th" scope="row">
-                        {row.details.productName}
+                        {historyRow.productName}
                       </TableCell>
 
                       <TableCell align="right">{historyRow.price}</TableCell>
@@ -191,34 +201,104 @@ Row.propTypes = {
 };
 
 export default function ProductTable() {
-  const [page, setPage] = React.useState(1);
-const dispatch=useDispatch();
-React.useEffect(() => {
-  dispatch(getAllProduct(page))
-}, [dispatch]);
+  const dispatch = useDispatch();
 
-  const { products, categories, suppliers, attributes } = useSelector(
-    (state) => state.products
-  );
+  const {
+    products,
+    categories,
+    suppliers,
+    attributes,
+    page,
+    searchByCastegory,
+    searchBySupplier,
+
+    searchByName,
+  } = useSelector((state) => state.products);
+  React.useEffect(() => {
+    if (
+      searchByCastegory != null &&
+      searchBySupplier != null &&
+      searchByName != ""
+    ) {
+      dispatch(
+        findByCategoryAndSupplierAndName({
+          idCategory: searchByCastegory,
+          idSupplier: searchBySupplier,
+          name: searchByName,
+          page: page,
+        })
+      );
+    } else if (searchByCastegory != null && searchBySupplier != null) {
+      dispatch(
+        findByCategoryAndSupplier({
+          idCategory: searchByCastegory,
+          idSupplier: searchBySupplier,
+          page: page,
+        })
+      );
+    } else {
+      dispatch(getAllProduct(page));
+    }
+  }, [dispatch]);
 
   const handleClickFirstPage = () => {
-    if( page >1){
-
-      setPage(page-1)
-      dispatch(getAllProduct(page-1))
-      
+    if (page > 1) {
+      dispatch(subPage());
+      if (
+        searchByCastegory != null &&
+        searchBySupplier != null &&
+        searchByName != ""
+      ) {
+        dispatch(
+          findByCategoryAndSupplierAndName({
+            idCategory: searchByCastegory,
+            idSupplier: searchBySupplier,
+            name: searchByName,
+            page: page - 1,
+          })
+        );
+      } else if (searchByCastegory != undefined && searchBySupplier != undefined) {
+        dispatch(
+          findByCategoryAndSupplier({
+            idCategory: searchByCastegory,
+            idSupplier: searchBySupplier,
+            page: page - 1,
+          })
+        );
+      } else {
+        dispatch(getAllProduct(page - 1));
+      }
     }
   };
-  const handleClickLastPage = () => {
-
-    if(products.length >0){
-      setPage(page+1)
-      dispatch(getAllProduct(page+1))
+  const handleClickLastPage = async () => {
+    if (products.length > 0) {
+      dispatch(addPage());
+      if (
+        searchByCastegory != undefined &&
+        searchBySupplier != undefined &&
+        searchByName != ""
+      ) {
+        dispatch(
+          findByCategoryAndSupplierAndName({
+            idCategory: searchByCastegory,
+            idSupplier: searchBySupplier,
+            name: searchByName,
+            page: page + 1,
+          })
+        );
+      } else if (searchByCastegory != undefined && searchBySupplier != undefined) {
+        console.log("aaa", page);
+        dispatch(
+          findByCategoryAndSupplier({
+            idCategory: searchByCastegory,
+            idSupplier: searchBySupplier,
+            page: page + 1,
+          })
+        );
+      } else {
+        dispatch(getAllProduct(page + 1));
+      }
     }
-      
-
-      
-    
   };
 
   return (
@@ -238,7 +318,6 @@ React.useEffect(() => {
           </TableHead>
           <TableBody>
             {products?.map((row) => {
-            
               var x = {
                 id: row?.product?.id,
                 productName: row?.product?.name,
@@ -267,15 +346,13 @@ React.useEffect(() => {
             {" "}
             <FirstPageIcon />
           </Button>
-          <span >{page}</span>
+          <span>{page}</span>
           <Button onClick={handleClickLastPage}>
             {" "}
             <LastPageIcon />
           </Button>
         </div>
       </TableContainer>
-
- 
     </Paper>
   );
 }

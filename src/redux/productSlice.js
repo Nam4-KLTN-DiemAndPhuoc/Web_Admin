@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, current } from "@reduxjs/toolkit";
 import orderApi from "../api/orderApi";
 import productApi from "../api/productApi";
 
@@ -9,6 +9,11 @@ const initialState = {
   attributes: [],
   errorMessage: "",
   product: {},
+  page: 1,
+  searchByCastegory: undefined,
+  searchBySupplier: undefined,
+  
+  searchByName: "",
 };
 
 export const getAllProduct = createAsyncThunk(
@@ -88,9 +93,87 @@ export const deleteProduct = createAsyncThunk(
     }
   }
 );
+export const addListImage = createAsyncThunk(
+  "addListImage",
+  async (params, { rejectWithValue }) => {
+    try {
+      const res = await productApi.addListImage(params);
+      return res;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+export const addCategory = createAsyncThunk(
+  "addCategory",
+  async (params, { rejectWithValue }) => {
+    try {
+      const res = await productApi.addCategory(params);
+      return res;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+export const addSupplier = createAsyncThunk(
+  "addSupplier",
+  async (params, { rejectWithValue }) => {
+    try {
+      const res = await productApi.addSupplier(params);
+      return res;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+export const findByCategoryAndSupplier = createAsyncThunk(
+  "findByCategoryAndSupplier",
+  async (params, { rejectWithValue }) => {
+    try {
+      const res = await productApi.findByCategoryAndSupplier(params);
+      return res;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+export const findByCategoryAndSupplierAndName = createAsyncThunk(
+  "findByCategoryAndSupplierAndName",
+  async (params, { rejectWithValue }) => {
+    try {
+      const res = await productApi.findByCategoryAndSupplierAndName(params);
+      return res;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
 const productSlice = createSlice({
   name: "products",
   initialState,
+  reducers: {
+    addPage: (state, action) => {
+      state.page = state.page + 1;
+    },
+    subPage: (state, action) => {
+      if (state.page > 1) state.page = state.page - 1;
+    },
+    setSearchByCastegory: (state, action) => {
+      console.log(action.payload)
+      state.searchByCastegory = action.payload;
+    },
+    setSearchBySupplier: (state, action) => {
+      console.log(action.payload)
+
+     state.searchBySupplier=action.payload
+    },
+    setSearchByName: (state, action) => {
+      console.log(action.payload)
+
+      state.searchByName = action.payload;
+    },
+   
+  },
   extraReducers: {
     [getAllProduct.pending]: (state, action) => {},
     [getAllProduct.fulfilled]: (state, action) => {
@@ -103,9 +186,14 @@ const productSlice = createSlice({
 
     [deleteProduct.pending]: (state, action) => {},
     [deleteProduct.fulfilled]: (state, action) => {
-      const u = state.products.find((p) => p.product.id == action.payload.id);
-
-      console.log(u);
+      console.log(
+        current(state.products).filter(
+          (p) => p.product.id !== action.payload.id
+        )
+      );
+      state.products = current(state.products).filter(
+        (p) => p.product.id != action.payload.id
+      );
     },
     [deleteProduct.rejected]: (state, action) => {
       state.errorMessage = action.payload;
@@ -134,23 +222,49 @@ const productSlice = createSlice({
     },
     [addProduct.pending]: (state, action) => {},
     [addProduct.fulfilled]: (state, action) => {
-      console.log(action.payload);
       state.products.push(action.payload);
       state.product = action.payload;
     },
     [addProduct.rejected]: (state, action) => {
       state.errorMessage = action.payload;
-      console.log(action.payload);
     },
-    [addAttribute.pending]: (state, action) => {},
-    [addAttribute.fulfilled]: (state, action) => {
-      console.log(action.payload);
+    [addCategory.pending]: (state, action) => {},
+    [addCategory.fulfilled]: (state, action) => {
+      if (action.payload.data == "") {
+        state.errorMessage = "Tên danh mục đã tồn tại!";
+      } else {
+        state.categories.push(action.payload);
+      }
     },
-    [addAttribute.rejected]: (state, action) => {
-      console.log(action.payload);
+    [addCategory.rejected]: (state, action) => {},
+    [addSupplier.pending]: (state, action) => {},
+    [addSupplier.fulfilled]: (state, action) => {
+      state.suppliers.push(action.payload);
+    },
+    [addSupplier.rejected]: (state, action) => {
+      state.errorMessage = action.payload;
+    },
+    [findByCategoryAndSupplier.pending]: (state, action) => {},
+    [findByCategoryAndSupplier.fulfilled]: (state, action) => {
+      state.products = action.payload;
+    },
+    [findByCategoryAndSupplier.rejected]: (state, action) => {
+      state.errorMessage = action.payload;
+    },
+    [findByCategoryAndSupplierAndName.pending]: (state, action) => {},
+    [findByCategoryAndSupplierAndName.fulfilled]: (state, action) => {
+      state.products = action.payload;
+    },
+    [findByCategoryAndSupplierAndName.rejected]: (state, action) => {
+      state.errorMessage = action.payload;
     },
   },
 });
 
 const { reducer, actions } = productSlice;
+export const {
+  addPage,
+  subPage,
+  setSearchByCastegory, setSearchByName,setSearchBySupplier
+} = productSlice.actions;
 export default reducer;
