@@ -8,34 +8,25 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { getAll } from "../redux/userSlice";
 
+export default function DrawerCustom() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const handleClick = (text) => {
+    if (text === "Đơn hàng") {
+    } else if (text === "Khách hàng") {
+      dispatch(getAll());
+    } else if (text === "Nhà cung cấp") {
+    } else if (text === "Sản phẩm") {
+    }
+  };
 
-  export default function DrawerCustom() {
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
-    const handleClick = (text) => {
-    
-      
-          if (text === "Đơn hàng") {
-          
-          } else if (text === "Khách hàng") {
-            dispatch(getAll());
-            
-          
-          
-          } else if (text === "Nhà cung cấp") {
-          } else if (text === "Sản phẩm") {
-          }
-        };
-      
-      return(
-    
+  return (
     <div>
       <Toolbar />
       <Divider />
- 
+
       <Divider />
       <List>
-     
         <ListItem
           button
           key={"Đơn hàng"}
@@ -58,7 +49,6 @@ import { getAll } from "../redux/userSlice";
           <ListItemText primary={"Khách hàng"} />
         </ListItem>
 
-        
         <Divider />
         <ListItem
           button
@@ -85,4 +75,4 @@ import { getAll } from "../redux/userSlice";
       <Divider />
     </div>
   );
-  }
+}

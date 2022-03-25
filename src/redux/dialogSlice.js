@@ -1,9 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  isOpen:false,
-  isAddAttributed:false,
-
+  isOpen: false,
 };
 
 const dialogSlice = createSlice({
@@ -11,16 +9,12 @@ const dialogSlice = createSlice({
   initialState,
   reducers: {
     openDialog: (state, action) => {
-      state.isOpen=! state.isOpen
+      state.isOpen = !state.isOpen;
     },
-    isAddAttributed: (state, action) => {
-      state.isAddAttributed= true
-    },
-    unAddAttributed: (state, action) => {
-      state.isAddAttributed= false
-    },
+    
   },
 });
 
-export const { openDialog,isAddAttributed ,unAddAttributed} = dialogSlice.actions;
+export const { openDialog, } =
+  dialogSlice.actions;
 export default dialogSlice.reducer;

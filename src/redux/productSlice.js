@@ -12,8 +12,9 @@ const initialState = {
   page: 1,
   searchByCastegory: undefined,
   searchBySupplier: undefined,
-  
   searchByName: "",
+  isAddAttributed: false,
+  images: [],
 };
 
 export const getAllProduct = createAsyncThunk(
@@ -65,6 +66,7 @@ export const addProduct = createAsyncThunk(
   async (params, { rejectWithValue }) => {
     try {
       const res = await productApi.addProduct(params);
+
       return res;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -148,6 +150,127 @@ export const findByCategoryAndSupplierAndName = createAsyncThunk(
     }
   }
 );
+export const findByCategoryAndName = createAsyncThunk(
+  "findByCategoryAndName",
+  async (params, { rejectWithValue }) => {
+    try {
+      const res = await productApi.findByCategoryAndName(params);
+      return res;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+export const findByCategory = createAsyncThunk(
+  "findByCategory",
+  async (params, { rejectWithValue }) => {
+    try {
+      const res = await productApi.findByCategory(params);
+      return res;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+export const findBySupplier = createAsyncThunk(
+  "findBySupplier",
+  async (params, { rejectWithValue }) => {
+    try {
+      const res = await productApi.findBySupplier(params);
+      return res;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+export const findByName = createAsyncThunk(
+  "findByName",
+  async (params, { rejectWithValue }) => {
+    try {
+      const res = await productApi.findByName(params);
+      return res;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+export const findBySupplierAndName = createAsyncThunk(
+  "findBySupplierAndName",
+  async (params, { rejectWithValue }) => {
+    try {
+      const res = await productApi.findBySupplierAndName(params);
+      return res;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+export const updateProduct = createAsyncThunk(
+  "updateProduct",
+  async (params, { rejectWithValue }) => {
+    try {
+      const res = await productApi.updateProduct(params);
+      return res;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+export const getProductById = createAsyncThunk(
+  "getProductById",
+  async (params, { rejectWithValue }) => {
+    try {
+      const res = await productApi.getProductById(params);
+      return res;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+export const getImagesByProductId = createAsyncThunk(
+  "getImagesByProductId",
+  async (params, { rejectWithValue }) => {
+    try {
+      const res = await productApi.getImagesByProductId(params);
+      return res;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+export const deleteImage = createAsyncThunk(
+  "deleteImage",
+  async (params, { rejectWithValue }) => {
+    try {
+      const res = await productApi.deleteImage(params);
+      return res;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+export const deleteS3 = createAsyncThunk(
+  "deleteS3",
+  async (params, { rejectWithValue }) => {
+    try {
+      const res = await productApi.deleteS3(params);
+      return res;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+export const updateAttribute = createAsyncThunk(
+  "updateAttribute",
+  async (params, { rejectWithValue }) => {
+    try {
+      const res = await productApi.updateAttribute(params);
+      return res;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
 const productSlice = createSlice({
   name: "products",
   initialState,
@@ -159,26 +282,25 @@ const productSlice = createSlice({
       if (state.page > 1) state.page = state.page - 1;
     },
     setSearchByCastegory: (state, action) => {
-      console.log(action.payload)
       state.searchByCastegory = action.payload;
     },
     setSearchBySupplier: (state, action) => {
-      console.log(action.payload)
-
-     state.searchBySupplier=action.payload
+      state.searchBySupplier = action.payload;
     },
     setSearchByName: (state, action) => {
-      console.log(action.payload)
-
       state.searchByName = action.payload;
     },
-   
+    unAddAttributed: (state, action) => {
+      state.isAddAttributed = false;
+    },
+    setCurrentProduct: (state, action) => {
+      state.product = action.payload;
+    },
   },
   extraReducers: {
     [getAllProduct.pending]: (state, action) => {},
     [getAllProduct.fulfilled]: (state, action) => {
       state.products = action.payload;
-      console.log(state.products);
     },
     [getAllProduct.rejected]: (state, action) => {
       state.errorMessage = action.payload;
@@ -186,11 +308,6 @@ const productSlice = createSlice({
 
     [deleteProduct.pending]: (state, action) => {},
     [deleteProduct.fulfilled]: (state, action) => {
-      console.log(
-        current(state.products).filter(
-          (p) => p.product.id !== action.payload.id
-        )
-      );
       state.products = current(state.products).filter(
         (p) => p.product.id != action.payload.id
       );
@@ -216,6 +333,7 @@ const productSlice = createSlice({
     [getAttribute.pending]: (state, action) => {},
     [getAttribute.fulfilled]: (state, action) => {
       state.attributes = action.payload;
+      
     },
     [getAttribute.rejected]: (state, action) => {
       state.errorMessage = action.payload;
@@ -223,14 +341,13 @@ const productSlice = createSlice({
     [addProduct.pending]: (state, action) => {},
     [addProduct.fulfilled]: (state, action) => {
       state.products.push(action.payload);
-      state.product = action.payload;
     },
     [addProduct.rejected]: (state, action) => {
       state.errorMessage = action.payload;
     },
     [addCategory.pending]: (state, action) => {},
     [addCategory.fulfilled]: (state, action) => {
-      if (action.payload.data == "") {
+      if (action.payload.data === "") {
         state.errorMessage = "Tên danh mục đã tồn tại!";
       } else {
         state.categories.push(action.payload);
@@ -258,6 +375,86 @@ const productSlice = createSlice({
     [findByCategoryAndSupplierAndName.rejected]: (state, action) => {
       state.errorMessage = action.payload;
     },
+    [findByCategoryAndName.pending]: (state, action) => {},
+    [findByCategoryAndName.fulfilled]: (state, action) => {
+      state.products = action.payload;
+    },
+    [findByCategoryAndName.rejected]: (state, action) => {
+      state.errorMessage = action.payload;
+    },
+    [findByCategory.pending]: (state, action) => {},
+    [findByCategory.fulfilled]: (state, action) => {
+      state.products = action.payload;
+    },
+    [findByCategory.rejected]: (state, action) => {
+      state.errorMessage = action.payload;
+    },
+    [findBySupplier.pending]: (state, action) => {},
+    [findBySupplier.fulfilled]: (state, action) => {
+      state.products = action.payload;
+    },
+    [findBySupplier.rejected]: (state, action) => {
+      state.errorMessage = action.payload;
+    },
+    [findByName.pending]: (state, action) => {},
+    [findByName.fulfilled]: (state, action) => {
+      state.products = action.payload;
+    },
+    [findByName.rejected]: (state, action) => {
+      state.errorMessage = action.payload;
+    },
+    [findBySupplierAndName.pending]: (state, action) => {},
+    [findBySupplierAndName.fulfilled]: (state, action) => {
+      state.products = action.payload;
+    },
+    [findBySupplierAndName.rejected]: (state, action) => {
+      state.errorMessage = action.payload;
+    },
+    [addAttribute.pending]: (state, action) => {},
+    [addAttribute.fulfilled]: (state, action) => {
+      state.isAddAttributed = true;
+    },
+    [addAttribute.rejected]: (state, action) => {
+      state.errorMessage = action.payload;
+    },
+    [updateAttribute.pending]: (state, action) => {},
+    [updateAttribute.fulfilled]: (state, action) => {
+      state.attributes = action.payload;
+    },
+    [updateAttribute.rejected]: (state, action) => {
+      state.errorMessage = action.payload;
+    },
+    [updateProduct.pending]: (state, action) => {},
+    [updateProduct.fulfilled]: (state, action) => {
+      const p = state.products.find(
+        (product) => product.product.id === action.payload.product.id
+      );
+      if(p){
+        p.product = action.payload.product;
+      }
+
+     
+
+      state.product = action.payload;
+
+    },
+    [updateProduct.rejected]: (state, action) => {
+      state.errorMessage = action.payload;
+    },
+    [getProductById.pending]: (state, action) => {},
+    [getProductById.fulfilled]: (state, action) => {
+      state.product = action.payload;
+    },
+    [getProductById.rejected]: (state, action) => {
+      state.errorMessage = action.payload;
+    },
+    [getImagesByProductId.pending]: (state, action) => {},
+    [getImagesByProductId.fulfilled]: (state, action) => {
+      state.images = action.payload;
+    },
+    [getImagesByProductId.rejected]: (state, action) => {
+      state.errorMessage = action.payload;
+    },
   },
 });
 
@@ -265,6 +462,10 @@ const { reducer, actions } = productSlice;
 export const {
   addPage,
   subPage,
-  setSearchByCastegory, setSearchByName,setSearchBySupplier
+  setSearchByCastegory,
+  setSearchByName,
+  setSearchBySupplier,
+  unAddAttributed,
+  setCurrentProduct,
 } = productSlice.actions;
 export default reducer;

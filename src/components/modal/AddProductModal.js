@@ -1,45 +1,34 @@
-import * as React from "react";
+import styled from "@emotion/styled";
+import AddCircleOutlinedIcon from "@mui/icons-material/AddCircleOutlined";
+import {
+  Autocomplete, FormControl, Stack,
+  TextField,
+  Tooltip
+} from "@mui/material";
 import Box from "@mui/material/Box";
-import Modal from "@mui/material/Modal";
 import Button from "@mui/material/Button";
+import Modal from "@mui/material/Modal";
+import { post } from "axios";
+import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
+import {
+  openDialog,
+  
+} from "../../redux/dialogSlice";
 import {
   openCategoryModal,
   openModal,
-  openSupplierModal,
+  openSupplierModal
 } from "../../redux/modalSlice";
-import axios, { post } from "axios";
-import AddCircleOutlinedIcon from "@mui/icons-material/AddCircleOutlined";
-
-import {
-  Autocomplete,
-  Dialog,
-  FormControl,
-  IconButton,
-  InputLabel,
-  MenuItem,
-  Select,
-  Stack,
-  TextField,
-  Tooltip,
-} from "@mui/material";
-import TextFieldCustom from "../TextFieldCustom";
-import PhotoCamera from "@mui/icons-material/PhotoCamera";
-import styled from "@emotion/styled";
 import {
   addAttribute,
   addListImage,
-  addProduct,
-  uploadFile,
+  addProduct,unAddAttributed
 } from "../../redux/productSlice";
-import AddSupplierModal from "./AddSupplierModal";
-import AddCategoryModal from "./AddCategoryModal";
-import {
-  isAddAttributed,
-  openDialog,
-  unAddAttributed,
-} from "../../redux/dialogSlice";
 import MyDialog from "../alert/MyDialog";
+import AddCategoryModal from "./AddCategoryModal";
+import AddSupplierModal from "./AddSupplierModal";
+
 
 const Input = styled("input")({
   display: "none",
@@ -59,7 +48,6 @@ const style = {
 };
 
 function ChildModal({ params }) {
-  console.log("parrmas ", params);
   const [open, setOpen] = React.useState(false);
   const dispatch = useDispatch();
   const [s, setS] = React.useState(0);
@@ -77,7 +65,6 @@ function ChildModal({ params }) {
 
       var files = [];
       for (let i = 0; i < params.images.length; i++) {
-        console.log(params.images[i]);
         var fd = new FormData();
         fd.append("file", params.images[i]);
         const config = {
@@ -88,7 +75,6 @@ function ChildModal({ params }) {
         const res = await post(url, fd, config);
         files.push(res);
       }
-      console.log(files);
       const data = {
         name: params.name,
         price: params.price,
@@ -107,6 +93,16 @@ function ChildModal({ params }) {
         };
         dispatch(addListImage(x));
       }
+    } else {
+      const data = {
+        name: params.name,
+        price: params.price,
+
+        description: params.description,
+        categoryId: params.categoryId,
+        supplierId: params.supplierId,
+      };
+      dispatch(addProduct(data));
     }
   };
   const handleClose = () => {
@@ -123,13 +119,11 @@ function ChildModal({ params }) {
       ];
 
       dispatch(addAttribute(params));
-      dispatch(isAddAttributed());
       dispatch(openDialog());
     }
     handleClose();
   };
-  const {isAddAttributed}= useSelector(s=>s.dialog)
-  console.log(" thuoc tinh san pham ", isAddAttributed)
+  const { isAddAttributed } = useSelector((s) => s.products);
 
   return (
     <React.Fragment>
@@ -158,6 +152,7 @@ function ChildModal({ params }) {
               <TextField
                 id="filled-basic"
                 label=" Size S - Số lượng"
+                inputProps={{ type: 'number'}}
                 variant="filled"
                 style={{ width: "100%", marginTop: "5px" }}
                 onChange={(e) => setS(e.target.value)}
@@ -165,6 +160,7 @@ function ChildModal({ params }) {
               <TextField
                 id="filled-basic"
                 label=" Size M - Số lượng"
+                inputProps={{ type: 'number'}}
                 variant="filled"
                 style={{ width: "100%", marginTop: "5px" }}
                 onChange={(e) => setM(e.target.value)}
@@ -172,6 +168,7 @@ function ChildModal({ params }) {
               <TextField
                 id="filled-basic"
                 label=" Size L - Số lượng"
+                inputProps={{ type: 'number'}}
                 variant="filled"
                 style={{ width: "100%", marginTop: "5px" }}
                 onChange={(e) => setL(e.target.value)}
@@ -179,6 +176,7 @@ function ChildModal({ params }) {
               <TextField
                 id="filled-basic"
                 label=" Size XL - Số lượng"
+                inputProps={{ type: 'number'}}
                 variant="filled"
                 style={{ width: "100%", marginTop: "5px" }}
                 onChange={(e) => setXL(e.target.value)}
@@ -222,7 +220,6 @@ export default function AddProductModal({ check }) {
   const [categoryId, setCategoryId] = React.useState();
   const [fileArray, setFileArray] = React.useState([]);
   const [previewImages, setPreviewImages] = React.useState([]);
-  const { isAddAttributed } = useSelector((s) => s.dialog);
 
   const handleClose = () => {
     dispatch(unAddAttributed());
@@ -251,7 +248,7 @@ export default function AddProductModal({ check }) {
     setPrice(0);
     setDescription("");
   };
-  const { products, categories, suppliers } = useSelector(
+  const { products, categories, suppliers, isAddAttributed } = useSelector(
     (state) => state.products
   );
   const { isOpenSupplier, isOpenCategory } = useSelector(
@@ -271,7 +268,7 @@ export default function AddProductModal({ check }) {
   const handleAddSupplier = () => {
     dispatch(openSupplierModal());
   };
-  console.log("san pham ", isAddAttributed)
+
   return (
     <div>
       <MyDialog
@@ -297,16 +294,12 @@ export default function AddProductModal({ check }) {
                 <>
                   <TextField {...params} label="Danh mục" />
                   {
-                    // console.log("ss ",params.inputProps.value)
-
-                    // console.log("ss ",( categories?.find(c=> c.name===params.inputProps.value))?.id   )
                     setCategoryId(
                       categories?.find(
                         (c) => c.name === params.inputProps.value
                       )?.id
                     )
                   }
-                  {/* <input type={"hidden"}  value={( categories?.find(c=> c.name===params.inputProps.value))?.id   } /> */}
                 </>
               )}
             />

@@ -9,7 +9,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { openDialog } from '../../redux/dialogSlice';
 import CloseIcon from '@mui/icons-material/Close';
 export default function MyDialog({check, title, content}) {
-  console.log(check)
 
   const dispatch= useDispatch()
 

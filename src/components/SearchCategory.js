@@ -12,8 +12,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { openModal } from "../redux/modalSlice";
 import AddProductModal from "./modal/AddProductModal";
 import {
+  findByCategory,
+  findByCategoryAndName,
   findByCategoryAndSupplier,
   findByCategoryAndSupplierAndName,
+  findByName,
+  findBySupplier,
+  findBySupplierAndName,
+  getAllProduct,
   isSearchByCategoryAndSupplier,
   isSearchByCategorySupplierAndName,
   setSearchByCastegory,
@@ -42,20 +48,82 @@ export default function SearchCategory() {
   const handleClick = (e) => {
     e.preventDefault();
     if (
-      searchByName != "" &&
-      searchByCastegory != undefined &&
-      searchByCastegory != undefined
+      searchByCastegory !== undefined &&
+      searchBySupplier !== undefined &&
+      searchByName !== ""
     ) {
-      console.log("bbb");
-      const params = {
-        idCategory: searchByCastegory,
-        idSupplier: searchBySupplier,
-        name: searchByName,
-        page: page,
-      };
+      dispatch(
+        findByCategoryAndSupplierAndName({
+          idCategory: searchByCastegory,
+          idSupplier: searchBySupplier,
+          name: searchByName,
+          page: page,
+        })
+      );
+    } else if (
+      searchByCastegory !== undefined &&
+      searchBySupplier !== undefined
+    ) {
+      dispatch(
+        findByCategoryAndSupplier({
+          idCategory: searchByCastegory,
+          idSupplier: searchBySupplier,
+          page: page,
+        })
+      );
+    } else if (searchByCastegory !== undefined && searchByName !== "") {
+      dispatch(
+        findByCategoryAndName({
+          idCategory: searchByCastegory,
+          name: searchByName,
+          page: page,
+        })
+      );
+    } else if (searchBySupplier !== undefined && searchByName !== "") {
+      dispatch(
+        findBySupplierAndName({
+          idSupplier: searchBySupplier,
+          name: searchByName,
+          page: page,
+        })
+      );
+    } else if (
+      searchBySupplier !== undefined &&
+      searchByCastegory !== undefined
+    ) {
+      dispatch(
+        findByCategoryAndSupplier({
+          idSupplier: searchBySupplier,
+          idCategory: searchByCastegory,
+          page: page,
+        })
+      );
+    } else if (searchBySupplier !== undefined) {
+      dispatch(
+        findBySupplier({
+          idSupplier: searchBySupplier,
 
-      dispatch(findByCategoryAndSupplierAndName(params));
-      // dispatch(isSearchByCategorySupplierAndName())
+          page: page,
+        })
+      );
+    } else if (searchByCastegory !== undefined) {
+      dispatch(
+        findByCategory({
+          idCategory: searchByCastegory,
+
+          page: page,
+        })
+      );
+    } else if (searchByName !== "") {
+      dispatch(
+        findByName({
+          name: searchByName,
+
+          page: page,
+        })
+      );
+    } else {
+      dispatch(getAllProduct(page));
     }
   };
 
@@ -70,15 +138,83 @@ export default function SearchCategory() {
     dispatch(openModal());
   };
   const handleSearch = () => {
-    if (searchByCastegory != undefined && searchByCastegory != undefined) {
-      const params = {
-        idCategory: searchByCastegory,
-        idSupplier: searchBySupplier,
+    if (
+      searchByCastegory !== undefined &&
+      searchBySupplier !== undefined &&
+      searchByName !== ""
+    ) {
+      dispatch(
+        findByCategoryAndSupplierAndName({
+          idCategory: searchByCastegory,
+          idSupplier: searchBySupplier,
+          name: searchByName,
+          page: page,
+        })
+      );
+    } else if (
+      searchByCastegory !== undefined &&
+      searchBySupplier !== undefined
+    ) {
+      dispatch(
+        findByCategoryAndSupplier({
+          idCategory: searchByCastegory,
+          idSupplier: searchBySupplier,
+          page: page,
+        })
+      );
+    } else if (searchByCastegory !== undefined && searchByName !== "") {
+      dispatch(
+        findByCategoryAndName({
+          idCategory: searchByCastegory,
+          name: searchByName,
+          page: page,
+        })
+      );
+    } else if (searchBySupplier !== undefined && searchByName !== "") {
+      dispatch(
+        findBySupplierAndName({
+          idSupplier: searchBySupplier,
+          name: searchByName,
+          page: page,
+        })
+      );
+    } else if (
+      searchBySupplier !== undefined &&
+      searchByCastegory !== undefined
+    ) {
+      dispatch(
+        findByCategoryAndSupplier({
+          idSupplier: searchBySupplier,
+          idCategory: searchByCastegory,
+          page: page,
+        })
+      );
+    } else if (searchBySupplier !== undefined) {
+      dispatch(
+        findBySupplier({
+          idSupplier: searchBySupplier,
 
-        page: page,
-      };
-      dispatch(findByCategoryAndSupplier(params));
-      // dispatch(isSearchByCategoryAndSupplier())
+          page: page,
+        })
+      );
+    } else if (searchByCastegory !== undefined) {
+      dispatch(
+        findByCategory({
+          idCategory: searchByCastegory,
+
+          page: page,
+        })
+      );
+    } else if (searchByName !== "") {
+      dispatch(
+        findByName({
+          name: searchByName,
+
+          page: page,
+        })
+      );
+    } else {
+      dispatch(getAllProduct(page));
     }
   };
   const cate = (v) => {

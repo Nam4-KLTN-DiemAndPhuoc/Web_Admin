@@ -30,13 +30,22 @@ import moment from "moment";
 import {
   addPage,
   deleteProduct,
+  findByCategory,
+  findByCategoryAndName,
   findByCategoryAndSupplier,
   findByCategoryAndSupplierAndName,
+  findByName,
+  findBySupplier,
+  findBySupplierAndName,
   getAllProduct,
   getAttribute,
+  getImagesByProductId,
+  getProductById,
   subPage,
 } from "../../redux/productSlice";
-
+import UpdateProductModal from "../modal/UpdateProductModal";
+import UpdateAttributeModal from "../modal/UpdateAttributeModal";
+import { openUpdateAtrributeModal, openUpdateProductModal } from "../../redux/modalSlice";
 function Row(props) {
   const { row } = props;
   const [open, setOpen] = React.useState(false);
@@ -47,46 +56,38 @@ function Row(props) {
     setOpen(!open);
   };
   const [status, setStatus] = React.useState("");
+  const { isOpenUpdateProductModal, isOpenUpdateAttributeModal } = useSelector((s) => s.modal);
+  const { product } = useSelector((s) => s.products);
 
   const handleChange = (event) => {
     event.preventDefault();
     setStatus(event.target.value);
   };
-  const changeStatus = (row) => {
-    const params = {
-      id: row.id,
-      status:
-        status === "Đang vận chuyển"
-          ? "PREPARING_TO_SHIP"
-          : status === "Đã giao"
-          ? "DELIVERED"
-          : status === "Hủy"
-          ? "CANCELED"
-          : "",
-    };
 
-    if (
-      window.confirm(
-        "Bạn có chắc chắn muốn chuyển trạng thái đơn hàng thành " +
-          status +
-          " không ?"
-      )
-    ) {
-      dispatch(updateStatus(params));
-    }
+  const handleUpdate = (data) => {
+    dispatch(getProductById(data.id));
+    dispatch(getImagesByProductId(data.id))
+    dispatch(openUpdateProductModal());
   };
-
-  const handleUpdate = () => {};
   const handleDelete = (id) => {
     const data = {
-      id: id,
+      id: id, 
       userId: user.id,
     };
     dispatch(deleteProduct(data));
   };
+const updateAtrribute=(data)=>{
+  dispatch(getAttribute(data))
+  dispatch(getProductById(data))
 
+dispatch(openUpdateAtrributeModal())
+
+}
   return (
     <React.Fragment>
+      <UpdateProductModal check={isOpenUpdateProductModal} />
+      <UpdateAttributeModal check={isOpenUpdateAttributeModal} />
+
       <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
         <TableCell>
           <IconButton
@@ -110,7 +111,7 @@ function Row(props) {
 
         <TableCell>
           <Stack spacing={2} direction="row">
-            <Button variant="contained" onClick={(id) => handleUpdate(id)}>
+            <Button variant="contained" onClick={(id) => handleUpdate(row)}>
               Cập nhật
             </Button>
             <Button variant="outlined" onClick={(id) => handleDelete(row.id)}>
@@ -138,10 +139,13 @@ function Row(props) {
                     <TableCell align="right">Giảm giá </TableCell>
                     <TableCell align="right">Bảo hành</TableCell>
                     <TableCell align="right">Ngày tạo</TableCell>
+                    <TableCell style={{width:200, height:50}} align="right">Hành động</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {row.details.map((historyRow, i) => (
+                  {row.details.map((historyRow, i) => 
+                   (
+                   
                     <TableRow>
                       <TableCell component="th" scope="row">
                         {historyRow.productName}
@@ -159,11 +163,18 @@ function Row(props) {
                       <TableCell align="right">{historyRow.discount}</TableCell>
 
                       <TableCell align="right">{historyRow.warranty}</TableCell>
+                      <TableCell align="right" style={{width:300}}>
+                     {
+                        moment(historyRow.createdAt).format("MM/DD/YYYY, h:mm:ss a")}
+                      </TableCell>
                       <TableCell align="right">
-                        {historyRow.createdAt}
+                        <Button variant="outlined" onClick={(id)=>updateAtrribute(historyRow.action)}>Cập nhật</Button>
+                        
                       </TableCell>
                     </TableRow>
-                  ))}
+                  )
+                  )
+                }
                 </TableBody>
               </Table>
             </Box>
@@ -195,6 +206,8 @@ Row.propTypes = {
         discount: PropTypes.number.isRequired,
         warranty: PropTypes.number.isRequired,
         createdAt: PropTypes.string.isRequired,
+    action: PropTypes.string.isRequired,
+
       })
     ).isRequired,
   }).isRequired,
@@ -216,9 +229,9 @@ export default function ProductTable() {
   } = useSelector((state) => state.products);
   React.useEffect(() => {
     if (
-      searchByCastegory != null &&
-      searchBySupplier != null &&
-      searchByName != ""
+      searchByCastegory !== undefined &&
+      searchBySupplier !== undefined &&
+      searchByName !== ""
     ) {
       dispatch(
         findByCategoryAndSupplierAndName({
@@ -228,11 +241,65 @@ export default function ProductTable() {
           page: page,
         })
       );
-    } else if (searchByCastegory != null && searchBySupplier != null) {
+    } else if (
+      searchByCastegory !== undefined &&
+      searchBySupplier !== undefined
+    ) {
       dispatch(
         findByCategoryAndSupplier({
           idCategory: searchByCastegory,
           idSupplier: searchBySupplier,
+          page: page,
+        })
+      );
+    } else if (searchByCastegory !== undefined && searchByName !== "") {
+      dispatch(
+        findByCategoryAndName({
+          idCategory: searchByCastegory,
+          name: searchByName,
+          page: page,
+        })
+      );
+    } else if (searchBySupplier !== undefined && searchByName !== "") {
+      dispatch(
+        findBySupplierAndName({
+          idSupplier: searchBySupplier,
+          name: searchByName,
+          page: page,
+        })
+      );
+    } else if (
+      searchBySupplier !== undefined &&
+      searchByCastegory !== undefined
+    ) {
+      dispatch(
+        findByCategoryAndSupplier({
+          idSupplier: searchBySupplier,
+          idCategory: searchByCastegory,
+          page: page,
+        })
+      );
+    } else if (searchBySupplier !== undefined) {
+      dispatch(
+        findBySupplier({
+          idSupplier: searchBySupplier,
+
+          page: page,
+        })
+      );
+    } else if (searchByCastegory !== undefined) {
+      dispatch(
+        findByCategory({
+          idCategory: searchByCastegory,
+
+          page: page,
+        })
+      );
+    } else if (searchByName !== "") {
+      dispatch(
+        findByName({
+          name: searchByName,
+
           page: page,
         })
       );
@@ -245,9 +312,9 @@ export default function ProductTable() {
     if (page > 1) {
       dispatch(subPage());
       if (
-        searchByCastegory != null &&
-        searchBySupplier != null &&
-        searchByName != ""
+        searchByCastegory !== null &&
+        searchBySupplier !== null &&
+        searchByName !== ""
       ) {
         dispatch(
           findByCategoryAndSupplierAndName({
@@ -257,11 +324,65 @@ export default function ProductTable() {
             page: page - 1,
           })
         );
-      } else if (searchByCastegory != undefined && searchBySupplier != undefined) {
+      } else if (
+        searchByCastegory !== undefined &&
+        searchBySupplier !== undefined
+      ) {
         dispatch(
           findByCategoryAndSupplier({
             idCategory: searchByCastegory,
             idSupplier: searchBySupplier,
+            page: page - 1,
+          })
+        );
+      } else if (searchByCastegory !== undefined && searchByName !== "") {
+        dispatch(
+          findByCategoryAndName({
+            idCategory: searchByCastegory,
+            name: searchByName,
+            page: page - 1,
+          })
+        );
+      } else if (searchBySupplier !== undefined && searchByName !== "") {
+        dispatch(
+          findBySupplierAndName({
+            idSupplier: searchBySupplier,
+            name: searchByName,
+            page: page - 1,
+          })
+        );
+      } else if (
+        searchBySupplier !== undefined &&
+        searchByCastegory !== undefined
+      ) {
+        dispatch(
+          findByCategoryAndSupplier({
+            idSupplier: searchBySupplier,
+            idCategory: searchByCastegory,
+            page: page - 1,
+          })
+        );
+      } else if (searchBySupplier !== undefined) {
+        dispatch(
+          findBySupplier({
+            idSupplier: searchBySupplier,
+
+            page: page - 1,
+          })
+        );
+      } else if (searchByCastegory !== undefined) {
+        dispatch(
+          findByCategory({
+            idCategory: searchByCastegory,
+
+            page: page - 1,
+          })
+        );
+      } else if (searchByName !== "") {
+        dispatch(
+          findByName({
+            name: searchByName,
+
             page: page - 1,
           })
         );
@@ -274,9 +395,9 @@ export default function ProductTable() {
     if (products.length > 0) {
       dispatch(addPage());
       if (
-        searchByCastegory != undefined &&
-        searchBySupplier != undefined &&
-        searchByName != ""
+        searchByCastegory !== undefined &&
+        searchBySupplier !== undefined &&
+        searchByName !== ""
       ) {
         dispatch(
           findByCategoryAndSupplierAndName({
@@ -286,12 +407,65 @@ export default function ProductTable() {
             page: page + 1,
           })
         );
-      } else if (searchByCastegory != undefined && searchBySupplier != undefined) {
-        console.log("aaa", page);
+      } else if (
+        searchByCastegory !== undefined &&
+        searchBySupplier !== undefined
+      ) {
         dispatch(
           findByCategoryAndSupplier({
             idCategory: searchByCastegory,
             idSupplier: searchBySupplier,
+            page: page + 1,
+          })
+        );
+      } else if (searchByCastegory !== undefined && searchByName !== "") {
+        dispatch(
+          findByCategoryAndName({
+            idCategory: searchByCastegory,
+            name: searchByName,
+            page: page + 1,
+          })
+        );
+      } else if (searchBySupplier !== undefined && searchByName !== "") {
+        dispatch(
+          findBySupplierAndName({
+            idSupplier: searchBySupplier,
+            name: searchByName,
+            page: page + 1,
+          })
+        );
+      } else if (
+        searchBySupplier !== undefined &&
+        searchByCastegory !== undefined
+      ) {
+        dispatch(
+          findByCategoryAndSupplier({
+            idSupplier: searchBySupplier,
+            idCategory: searchByCastegory,
+            page: page + 1,
+          })
+        );
+      } else if (searchBySupplier !== undefined) {
+        dispatch(
+          findBySupplier({
+            idSupplier: searchBySupplier,
+
+            page: page + 1,
+          })
+        );
+      } else if (searchByCastegory !== undefined) {
+        dispatch(
+          findByCategory({
+            idCategory: searchByCastegory,
+
+            page: page + 1,
+          })
+        );
+      } else if (searchByName !== "") {
+        dispatch(
+          findByName({
+            name: searchByName,
+
             page: page + 1,
           })
         );
@@ -300,6 +474,7 @@ export default function ProductTable() {
       }
     }
   };
+  const { openUpdateProductModal } = useSelector((s) => s.modal);
 
   return (
     <Paper sx={{ width: "100%" }}>
@@ -313,7 +488,7 @@ export default function ProductTable() {
               <TableCell align="right">Hình ảnh</TableCell>
               <TableCell align="right">Danh mục</TableCell>
               <TableCell align="right">Nhà cung cấp</TableCell>
-              <TableCell align="center">Hành động</TableCell>
+              <TableCell style={{width:300, height:50}} align="center">Hành động</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -325,7 +500,8 @@ export default function ProductTable() {
                 category: row?.category?.name,
                 supplier: row?.supplier?.supplierName,
                 action: [],
-                details: attributes?.map((o) => ({
+                details: 
+                attributes?.length >0 ? (attributes?.map((o) => ({
                   productName: o?.product?.name,
                   price: row?.product?.price,
                   size: o?.size,
@@ -335,7 +511,20 @@ export default function ProductTable() {
                   discount: o?.product?.discount,
                   warranty: o?.product?.warranty,
                   createdAt: o?.product?.createdAt,
-                })),
+                  action:row?.product?.id
+                }))):([{
+                  productName: row?.product?.name,
+                  price: row?.product?.price,
+                  size: "",
+                  amount: 0,
+                  description:row?.product?.description,
+                  viewNumber: row?.product?.viewNumber,
+                  discount: row?.product?.discount,
+                  warranty: row?.product?.warranty,
+                  createdAt: row?.product?.createdAt,
+                  action:row?.product?.id
+                } ]) 
+                
               };
               return <Row key={row.id} row={x} />;
             })}
