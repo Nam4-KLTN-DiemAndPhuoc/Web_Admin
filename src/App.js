@@ -1,16 +1,13 @@
-import Cookies from "js-cookie";
 import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Dashboard from "./pages/Dashboard";
-import Login from "./pages/Login";
+import { useDispatch } from "react-redux";
 import Root from "./pages/Root";
-import { refreshToken } from "./redux/authSlice";
+import { refreshToken, removeErrMessage } from "./redux/authSlice";
 
 function App() {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(refreshToken());
+    dispatch(removeErrMessage());
   }, [dispatch]);
 
   return <Root />;

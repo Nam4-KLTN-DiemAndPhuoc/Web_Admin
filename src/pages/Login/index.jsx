@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Form, Formik } from "formik";
 import { AccountCircle, Lock, Phone } from "@material-ui/icons";
 import AuthLaylout from "./../../components/Layout/AuthLayout";
@@ -11,9 +11,14 @@ import {
 } from "@material-ui/core";
 import useStyles from "./style";
 import { useDispatch, useSelector } from "react-redux";
-import { login, removeErrorMessage } from "../../redux/authSlice";
+import {
+  login,
+  removeErrMessage,
+  removeErrorMessage,
+} from "../../redux/authSlice";
 import { useNavigate } from "react-router-dom";
 import { validationLogin } from "../../utils/Validation";
+import MyAlert from "../../components/alert/MyAlert";
 export default function Login() {
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -25,11 +30,13 @@ export default function Login() {
       email: values.email,
       password: values.password,
     };
-
+    dispatch(removeErrMessage());
     const res = await dispatch(login(data));
-
+    console.log(token);
+    if (token) {
+      dispatch(removeErrMessage());
       navigate("/", (require = "true"));
-
+    }
   };
   return (
     <AuthLaylout>
@@ -39,10 +46,9 @@ export default function Login() {
           password: "",
         }}
         validationSchema={validationLogin}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
+        onSubmit={(values, { setSubmitting }) => {
           handleSubmitForm(values);
           setSubmitting(true);
-          resetForm();
           setSubmitting(false);
         }}
       >
@@ -50,7 +56,6 @@ export default function Login() {
           values,
           errors,
           touched,
-          resetForm,
           handleChange,
           handleSubmit,
           isSubmitting,
@@ -63,6 +68,13 @@ export default function Login() {
             <Typography variant="h4" color="primary" align="center">
               Login
             </Typography>
+            {errorMessage != "" && (
+              <MyAlert
+                style={{ backgroundColor: "black" }}
+                severity={"error"}
+                message={errorMessage}
+              />
+            )}
             <TextField
               label="Email"
               error={errors.email}
@@ -100,9 +112,6 @@ export default function Login() {
               onChange={handleChange}
             />
             <div style={{ display: "flex", width: "100%" }}>
-              <Button variant="secondary" onClick={resetForm}>
-                Reset Form
-              </Button>{" "}
               <div id="sign-in-button"> </div>
               <Button
                 type="submit"

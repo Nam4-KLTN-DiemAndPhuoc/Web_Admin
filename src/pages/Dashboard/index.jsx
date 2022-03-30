@@ -47,7 +47,7 @@ function Dashboard(props) {
     dispatch(getByStatus("PREPARING_TO_SHIP"));
     dispatch(getByStatus("DELIVERED"));
     dispatch(getByStatus("CANCELED"));
-    
+
     dispatch(getAllCategory());
     dispatch(getAllSupplier());
   }, [dispatch]);
@@ -62,12 +62,12 @@ function Dashboard(props) {
     } else if (text === "Khách hàng") {
       setCheck("Khách hàng");
       dispatch(getAll());
-
     } else if (text === "Nhà cung cấp") {
     } else if (text === "Sản phẩm") {
       setCheck("Sản phẩm");
     } else if (text === "Đăng xuất") {
       dispatch(logout());
+      navigate("/login", (require = "true"));
     }
   };
 
