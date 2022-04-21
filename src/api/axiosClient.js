@@ -1,7 +1,7 @@
 import axios from "axios";
 import queryString from "query-string";
 import Cookies from "js-cookie";
-const REACT_APP_API_URL = "http://localhost:9191/api/";
+const REACT_APP_API_URL = "http://165.22.105.148:9191/api/";
 
 const axiosClient = axios.create({
   baseURL: REACT_APP_API_URL,
