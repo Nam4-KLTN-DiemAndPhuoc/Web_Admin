@@ -9,48 +9,73 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { openCategoryModal, openSupplierModal } from "../../redux/modalSlice";
+import {
+  openCategoryModal,
+  openSupplierModal,
+  openUpdateSupplierModal,
+} from "../../redux/modalSlice";
 import Select from "react-select";
 import useLocationForm from "../address/useLocationForm";
-import { addSupplier } from "../../redux/productSlice";
+import { addSupplier, updateSupplier } from "../../redux/productSlice";
 import { openDialog } from "../../redux/dialogSlice";
 import MyDialog from "../alert/MyDialog";
 import MyAlert from "../alert/MyAlert";
 
-function AddSupplierModal({ check }) {
+function UpdateSupplierModal({ check }) {
   const [open, setOpen] = React.useState(check);
-  const {isOpen}= useSelector(state=> state.dialog)
-  const [severity, setSeverity]= useState("")
-  const [messaage, setMessage]= useState("")
+  const { isOpen } = useSelector((state) => state.dialog);
+  const [severity, setSeverity] = useState("");
+  const [messaage, setMessage] = useState("");
   const dispatch = useDispatch();
+  const { supplier } = useSelector((state) => state.products);
+  const [street, setStreet] = useState();
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  console.log("supplier  ", supplier);
+  const { state, onCitySelect, onDistrictSelect, onWardSelect, onSubmit } =
+    useLocationForm(false);
+
+  const {
+    cityOptions,
+    districtOptions,
+    wardOptions,
+    selectedCity,
+    selectedDistrict,
+    selectedWard,
+  } = state;
+
   const handleOpen = () => {
-    if(name!="" && phone!="" && street!="" && selectedWard.label!="" && selectedDistrict.label!="" &&  selectedCity.label!="" ){
+    if (
+      name != "" ||
+      phone != "" ||
+      street != "" ||
+      selectedWard?.label != "" ||
+      selectedDistrict?.label != "" ||
+      selectedCity?.label != ""
+    ) {
       const data = {
-        supplierName: name,
-        phoneNumber: phone,
-        street: street,
-        wards: selectedWard.label,
-        district: selectedDistrict.label,
-        city: selectedCity.label,
+        id: supplier?.id,
+        supplierName: name !== "" ? name : supplier.supplierName,
+        phoneNumber: phone !== "" ? phone : supplier.phoneNumber,
+        street: street !== "" ? street : supplier.Street,
+        wards: selectedWard?.label != "" ? selectedWard?.label : supplier.wards,
+        district: selectedDistrict ? selectedDistrict.label : supplier.district,
+        city: selectedCity ? selectedCity.label : supplier.city,
       };
-      dispatch(addSupplier(data));
-      dispatch(openDialog())
-  
-      dispatch(openSupplierModal());
+      console.log("dsts ", data);
+      dispatch(updateSupplier(data));
+      dispatch(openDialog());
+
+      dispatch(openUpdateSupplierModal());
     }
-    else{
-      setSeverity("error")
-      setMessage("Vui lòng nhập hết các trường bên dưới!")
-    }
-   
   };
   const handleClose = () => {
     setOpen(false);
-    setMessage("")
-    setSeverity("")
-    dispatch(openSupplierModal());
+    setMessage("");
+    setSeverity("");
+    dispatch(openUpdateSupplierModal());
   };
   const style = {
     position: "absolute",
@@ -65,26 +90,19 @@ function AddSupplierModal({ check }) {
     px: 4,
     pb: 3,
   };
-  const { state, onCitySelect, onDistrictSelect, onWardSelect, onSubmit } =
-    useLocationForm(false);
 
-  const {
-    cityOptions,
-    districtOptions,
-    wardOptions,
-    selectedCity,
-    selectedDistrict,
-    selectedWard,
-  } = state;
-  const [street, setStreet] = useState("");
-  const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
+  useEffect(() => {
+    setName(supplier?.supplierName);
+    setStreet(supplier.street);
+    setPhone(supplier.phoneNumber);
+  }, [supplier, dispatch]);
   return (
     <React.Fragment>
-     
-      
-      <MyDialog check={isOpen} title="Thông báo"
-       content="Thêm nhà cung cấp thành công" />
+      <MyDialog
+        check={isOpen}
+        title="Thông báo"
+        content="Cập nhật nhà cung cấp thành công"
+      />
       <Modal
         hideBackdrop
         open={check}
@@ -93,8 +111,10 @@ function AddSupplierModal({ check }) {
         aria-describedby="child-modal-description"
       >
         <Box sx={{ ...style, width: 650 }}>
-          <h2 id="parent-modal-title">Thêm nhà cung cấp</h2>
-         {severity !="" && messaage !="" && (<MyAlert severity={severity} message={messaage} />)}
+          <h2 id="parent-modal-title">Cập nhật nhà cung cấp</h2>
+          {severity != "" && messaage != "" && (
+            <MyAlert severity={severity} message={messaage} />
+          )}
 
           <Box sx={{ width: "100% " }}>
             <FormControl fullWidth>
@@ -103,6 +123,7 @@ function AddSupplierModal({ check }) {
                 label="Tên nhà cung cấp"
                 variant="filled"
                 style={{ width: "100%", marginTop: "5px" }}
+                defaultValue={name}
                 onChange={(e) => setName(e.target.value)}
               />
 
@@ -115,6 +136,7 @@ function AddSupplierModal({ check }) {
                   marginTop: "5px",
                   marginBottom: "10px",
                 }}
+                defaultValue={phone}
                 onChange={(e) => setPhone(e.target.value)}
               />
               <div style={{ marginBottom: 10 }}>
@@ -133,7 +155,9 @@ function AddSupplierModal({ check }) {
                   options={cityOptions}
                   onChange={(option) => onCitySelect(option)}
                   placeholder="Tỉnh/Thành"
-                  defaultValue={selectedCity}
+                  defaultValue={cityOptions.find(
+                    (c) => c.label == supplier.city
+                  )}
                 />
 
                 <Select
@@ -143,7 +167,9 @@ function AddSupplierModal({ check }) {
                   options={districtOptions}
                   onChange={(option) => onDistrictSelect(option)}
                   placeholder="Quận/Huyện"
-                  defaultValue={selectedDistrict}
+                  defaultValue={districtOptions.find(
+                    (c) => c.label == supplier.district
+                  )}
                 />
 
                 <Select
@@ -153,7 +179,9 @@ function AddSupplierModal({ check }) {
                   options={wardOptions}
                   placeholder="Phường/Xã"
                   onChange={(option) => onWardSelect(option)}
-                  defaultValue={selectedWard}
+                  defaultValue={wardOptions.find(
+                    (c) => c.label == supplier.wards
+                  )}
                 />
                 {/* </div> */}
               </Stack>
@@ -162,6 +190,7 @@ function AddSupplierModal({ check }) {
                 label="Tên đường, số nhà"
                 variant="filled"
                 style={{ width: "100%", marginTop: "10px" }}
+                defaultValue={street}
                 onChange={(e) => setStreet(e.target.value)}
               />
               {/* <button
@@ -199,4 +228,4 @@ function AddSupplierModal({ check }) {
   );
 }
 
-export default AddSupplierModal;
+export default UpdateSupplierModal;

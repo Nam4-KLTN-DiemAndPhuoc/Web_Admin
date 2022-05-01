@@ -13,6 +13,7 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import MailIcon from "@mui/icons-material/Mail";
 import MenuIcon from "@mui/icons-material/Menu";
+import SupervisedUserCircleIcon from "@mui/icons-material/SupervisedUserCircle";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import OrderTable from "../../components/Table/UserTable";
@@ -25,6 +26,10 @@ import UserTable from "../../components/Table/UserTable";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import { logout } from "../../redux/authSlice";
 import { getByStatus } from "../../redux/orderSlice";
+import EventNoteIcon from "@mui/icons-material/EventNote";
+import FactoryIcon from "@mui/icons-material/Factory";
+import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket';
+
 import {
   getAllCategory,
   getAllProduct,
@@ -33,6 +38,8 @@ import {
 } from "../../redux/productSlice";
 import ProductTable from "../../components/Table/ProductTable";
 import ContentProduct from "../../components/ContentProduct";
+import SupplierTable from "../../components/Table/SupplierTable";
+import { getSuppliers } from "../../redux/supplierSlice";
 const drawerWidth = 240;
 
 function Dashboard(props) {
@@ -62,12 +69,16 @@ function Dashboard(props) {
     } else if (text === "Khách hàng") {
       setCheck("Khách hàng");
       dispatch(getAll());
-    } else if (text === "Nhà cung cấp") {
     } else if (text === "Sản phẩm") {
       setCheck("Sản phẩm");
     } else if (text === "Đăng xuất") {
-      dispatch(logout());
-      navigate("/login", (require = "true"));
+      if (window.confirm("Bạn có chắc chắn muốn đăng xuất không? ")) {
+        dispatch(logout());
+        navigate("/login", (require = "true"));
+      }
+    } else if (text === "Nhà cung cấp") {
+      dispatch(getAllSupplier());
+      setCheck("Nhà cung cấp");
     }
   };
 
@@ -84,7 +95,7 @@ function Dashboard(props) {
           onClick={() => handleClick("Đơn hàng")}
         >
           <ListItemIcon>
-            <InboxIcon />
+            <EventNoteIcon />
           </ListItemIcon>
           <ListItemText primary={"Đơn hàng"} />
         </ListItem>
@@ -95,7 +106,7 @@ function Dashboard(props) {
           onClick={() => handleClick("Khách hàng")}
         >
           <ListItemIcon>
-            <InboxIcon />
+            <SupervisedUserCircleIcon />
           </ListItemIcon>
           <ListItemText primary={"Khách hàng"} />
         </ListItem>
@@ -107,7 +118,7 @@ function Dashboard(props) {
           onClick={() => handleClick("Sản phẩm")}
         >
           <ListItemIcon>
-            <InboxIcon />
+            <ShoppingBasketIcon />
           </ListItemIcon>
           <ListItemText primary={"Sản phẩm"} />
         </ListItem>
@@ -118,7 +129,7 @@ function Dashboard(props) {
           onClick={() => handleClick("Nhà cung cấp")}
         >
           <ListItemIcon>
-            <InboxIcon />
+            <FactoryIcon />
           </ListItemIcon>
           <ListItemText primary={"Nhà cung cấp"} />
         </ListItem>
@@ -220,8 +231,10 @@ function Dashboard(props) {
           <Content />
         ) : check == "Sản phẩm" ? (
           <ContentProduct />
+        ) : check == "Nhà cung cấp" ? (
+          <SupplierTable />
         ) : (
-          <div>chua</div>
+          <div>ss</div>
         )}
 
         <Typography paragraph></Typography>

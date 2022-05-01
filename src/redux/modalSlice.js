@@ -5,6 +5,7 @@ const initialState = {
   isOpenSupplier: false,
   isOpenCategory: false,
   isOpenUpdateProductModal: false,
+  isOpenUpdateSupplierModal: false,
   isOpenUpdateAttributeModal:false
 };
 
@@ -28,6 +29,10 @@ const modalSlice = createSlice({
       state.isOpenUpdateAttributeModal = !state.isOpenUpdateAttributeModal;
       
     },
+    openUpdateSupplierModal: (state, action) => {
+      state.isOpenUpdateSupplierModal = !state.isOpenUpdateSupplierModal;
+      
+    },
   },
 });
 
@@ -35,6 +40,6 @@ export const {
   openModal,
   openCategoryModal,
   openSupplierModal,
-  openUpdateProductModal,openUpdateAtrributeModal
+  openUpdateProductModal,openUpdateAtrributeModal,openUpdateSupplierModal
 } = modalSlice.actions;
 export default modalSlice.reducer;

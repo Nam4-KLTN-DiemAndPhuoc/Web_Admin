@@ -25,6 +25,7 @@ import {
   addListImage,
   addProduct,unAddAttributed
 } from "../../redux/productSlice";
+import MyAlert from "../alert/MyAlert";
 import MyDialog from "../alert/MyDialog";
 import AddCategoryModal from "./AddCategoryModal";
 import AddSupplierModal from "./AddSupplierModal";
@@ -61,7 +62,7 @@ function ChildModal({ params }) {
     setOpen(true);
 
     if (params?.images.length > 0) {
-      const url = "http://localhost:9191/api/user-service/auth/upload";
+      const url = "http://165.22.105.148:9191/api/user-service/auth/upload";
 
       var files = [];
       for (let i = 0; i < params.images.length; i++) {
@@ -85,7 +86,6 @@ function ChildModal({ params }) {
         supplierId: params.supplierId,
       };
       const p = await dispatch(addProduct(data));
-
       for (let j = 0; j < files.length; j++) {
         let x = {
           url: files[j].data,
@@ -132,7 +132,7 @@ function ChildModal({ params }) {
         title="Thông báo"
         content="Thêm thuộc tính sản phẩm thành công !"
       />
-      {isAddAttributed == false && (
+      {isAddAttributed == false &&  (
         <Button variant="contained" onClick={handleOpen}>
           Thêm thuộc tính
         </Button>
@@ -220,6 +220,8 @@ export default function AddProductModal({ check }) {
   const [categoryId, setCategoryId] = React.useState();
   const [fileArray, setFileArray] = React.useState([]);
   const [previewImages, setPreviewImages] = React.useState([]);
+  const [severity, setSeverity]= React.useState("")
+  const [message, setMessage]= React.useState("")
 
   const handleClose = () => {
     dispatch(unAddAttributed());
@@ -284,6 +286,10 @@ export default function AddProductModal({ check }) {
         <Box sx={{ ...style, width: 800 }}>
           <h2 id="parent-modal-title">Thêm sản phẩm</h2>
           <div>
+          { message && severity && (
+<MyAlert severity={severity} message={message} />
+
+  )}
             <Autocomplete
               style={{ float: "left" }}
               disablePortal
@@ -392,7 +398,8 @@ export default function AddProductModal({ check }) {
 
           {/* <div style={{ float: "right" }}> */}
           <Stack direction="row" spacing={2} style={{ float: "right" }}>
-            <ChildModal
+            {supplierId != null && categoryId!=null && name != "" && price >0 &&
+              <ChildModal
               params={{
                 name: name,
                 price: price,
@@ -403,6 +410,10 @@ export default function AddProductModal({ check }) {
                 categoryId: categoryId,
               }}
             />
+          
+
+            }
+            
             {isAddAttributed == true && (
               <Button variant="contained" color="success" onClick={handleSave}>
                 Lưu

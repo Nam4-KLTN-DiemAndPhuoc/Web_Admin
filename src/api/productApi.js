@@ -39,6 +39,23 @@ const productApi = {
     const url = `supplier-service/supplier`;
     return axiosClient.get(url);
   },
+  getSupplierById: (id) => {
+    const url = `supplier-service/supplier/${id}`;
+    return axiosClient.get(url);
+  },
+  searchSupplier: (p) => {
+    console.log("PP  ", p);
+    const url = `supplier-service/supplier/search?key=${p.key}&city=${p.city}&district=${p.district}&ward=${p.ward}`;
+    return axiosClient.get(url);
+  },
+  updateSupplier: (params) => {
+    const url = `supplier-service/admin/update`;
+    return axiosClient.post(url, params);
+  },
+  deleteSupplier: (id) => {
+    const url = `supplier-service/admin/delete/${id}`;
+    return axiosClient.post(url);
+  },
   getAttribute: (id) => {
     const url = `product-service/attribute/product/${id}`;
     return axiosClient.get(url);
@@ -84,12 +101,12 @@ const productApi = {
     return axiosClient.get(url);
   },
   updateProduct: (params) => {
-    console.log(params)
+    console.log(params);
     const url = `product-service/admin/product/update`;
     return axiosClient.post(url, params);
   },
   updateAttribute: (params) => {
-    console.log(params)
+    console.log(params);
     const url = `product-service/admin/attribute/update`;
     return axiosClient.post(url, params);
   },
@@ -99,7 +116,7 @@ const productApi = {
   },
   deleteS3: (params) => {
     const url = `user-service/auth/deleteS3`;
-    return axiosClient.post(url,params);
+    return axiosClient.post(url, params);
   },
 };
 

@@ -12,8 +12,11 @@ export const login = createAsyncThunk(
   async (params, { rejectWithValue }) => {
     try {
       const res = await authApi.login(params);
-      await Cookies.set("token", res.token);
-      console.log(Cookies.get("token"));
+      console.log("xxx ", res);
+      if (res.user.role.name === "ROLE_ADMIN") {
+        await Cookies.set("token", res.token);
+        console.log(Cookies.get("token"));
+      }
       return res;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -55,8 +58,13 @@ const authSlice = createSlice({
   extraReducers: {
     [login.pending]: (state, action) => {},
     [login.fulfilled]: (state, action) => {
-      state.token = action.payload.token;
-      state.user = action.payload.user;
+      if (action.payload.user.role.name === "ROLE_ADMIN") {
+        state.token = action.payload.token;
+        state.user = action.payload.user;
+      }
+      else{
+        state.errorMessage="Bạn không có quyền truy cập trang web này !"
+      }
     },
     [login.rejected]: (state, action) => {
       state.errorMessage = action.payload;

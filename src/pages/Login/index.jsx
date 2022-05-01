@@ -36,6 +36,11 @@ export default function Login() {
     if (token) {
       dispatch(removeErrMessage());
       navigate("/", (require = "true"));
+    } else {
+      if (errorMessage != "") {
+        setTimeout("", 3000);
+        dispatch(removeErrMessage());
+      }
     }
   };
   return (

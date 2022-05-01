@@ -19,31 +19,24 @@ import MyDialog from "../alert/MyDialog";
 function AddCategoryModal({ check }) {
   const [open, setOpen] = React.useState(check);
   const dispatch = useDispatch();
-  const {errorMessage}= useSelector(state=> state.products)
-  const [severity, setSeverity]= useState("")
-  const [messaage, setMessage]= useState("")
-
-  const [name, setName]= useState("")
-const {isOpen}=useSelector(s=>s.dialog)
-
-  const handleOpen = async() => {
-      if( name !==""){
-       const a= await  dispatch(addCategory({name:name}))
-       if(a.payload.data==''){
-         setSeverity("error")
-         setMessage("Tên danh mục đã tồn tại! ")
-       }
-       else{
-         setMessage("")
-         setSeverity("")
-         dispatch(openDialog())
-    dispatch(openCategoryModal());
-
-       }
-       
+  const { errorMessage } = useSelector((state) => state.products);
+  const [severity, setSeverity] = useState("");
+  const [messaage, setMessage] = useState("");
+  const [name, setName] = useState("");
+  const { isOpen } = useSelector((s) => s.dialog);
+  const handleOpen = async () => {
+    if (name !== "") {
+      const a = await dispatch(addCategory({ name: name }));
+      if (a.payload.data == "") {
+        setSeverity("error");
+        setMessage("Tên danh mục đã tồn tại! ");
+      } else {
+        setMessage("");
+        setSeverity("");
+        dispatch(openDialog());
+        dispatch(openCategoryModal());
       }
-
-
+    }
   };
   const handleClose = () => {
     dispatch(openCategoryModal());
@@ -63,60 +56,57 @@ const {isOpen}=useSelector(s=>s.dialog)
   };
   return (
     <>
-
- 
-    <React.Fragment>
-    <MyDialog check={isOpen} title="Thông báo" content="Thêm danh mục thành công!" />
-      <Modal
-        hideBackdrop
-        open={check}
-        onClose={handleClose}
-        aria-labelledby="child-modal-title"
-        aria-describedby="child-modal-description"
-      >
-        <Box sx={{ ...style, width: 400 }}>
-
-
-          <h2 id="parent-modal-title">Thêm danh mục</h2>
-          { messaage && severity && (
-<MyAlert severity={severity} message={messaage} />
-
-  )}
-          <Box sx={{ width: "100% " }}>
-            <FormControl fullWidth>
-              <TextField
-                id="filled-basic"
-                label="Tên danh mục"
-                variant="filled"
-                style={{ width: "100%", marginTop: "5px" }}
-                onChange={e=> setName(e.target.value)}
-              />
-              <div style={{ width: "100%", marginTop: "10px" }}>
-                <Button
-                  variant="contained"
-                  color="error"
-                  style={{ float: "right" }}
-                  onClick={handleClose}
-                >
-                  Đóng
-                </Button>
-                <Button
-                  variant="contained"
-                  color="success"
-                  onClick={handleOpen}
-                >
-                  Lưu
-                </Button>
-              </div>
-            </FormControl>
-        
+      <React.Fragment>
+        <MyDialog
+          check={isOpen}
+          title="Thông báo"
+          content="Thêm danh mục thành công!"
+        />
+        <Modal
+          hideBackdrop
+          open={check}
+          onClose={handleClose}
+          aria-labelledby="child-modal-title"
+          aria-describedby="child-modal-description"
+        >
+          <Box sx={{ ...style, width: 400 }}>
+            <h2 id="parent-modal-title">Thêm danh mục</h2>
+            {messaage && severity && (
+              <MyAlert severity={severity} message={messaage} />
+            )}
+            <Box sx={{ width: "100% " }}>
+              <FormControl fullWidth>
+                <TextField
+                  id="filled-basic"
+                  label="Tên danh mục"
+                  variant="filled"
+                  style={{ width: "100%", marginTop: "5px" }}
+                  onChange={(e) => setName(e.target.value)}
+                />
+                <div style={{ width: "100%", marginTop: "10px" }}>
+                  <Button
+                    variant="contained"
+                    color="error"
+                    style={{ float: "right" }}
+                    onClick={handleClose}
+                  >
+                    Đóng
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="success"
+                    onClick={handleOpen}
+                  >
+                    Lưu
+                  </Button>
+                </div>
+              </FormControl>
+            </Box>
           </Box>
-        </Box>
-      </Modal>
-    </React.Fragment>
+        </Modal>
+      </React.Fragment>
     </>
   );
- 
 }
 
 export default AddCategoryModal;

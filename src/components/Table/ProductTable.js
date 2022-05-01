@@ -74,7 +74,10 @@ function Row(props) {
       id: id, 
       userId: user.id,
     };
-    dispatch(deleteProduct(data));
+    if (window.confirm("Bạn có chắc chắn muốn xóa sản phẩm "+data.id+" không? ")) {
+      dispatch(deleteProduct(data));
+
+    }
   };
 const updateAtrribute=(data)=>{
   dispatch(getAttribute(data))

@@ -3,6 +3,7 @@ import authSlice from "./authSlice";
 import userSlice from "./userSlice";
 import orderSlice from "./orderSlice";
 import productSlice from "./productSlice";
+import supplierSlice from "./supplierSlice";
 
 import { combineReducers } from "redux";
 import modalSlice from "./modalSlice";
@@ -10,11 +11,12 @@ import dialogSlice from "./dialogSlice";
 
 const rootReducer = combineReducers({
   auth: authSlice,
-  users:userSlice,
-  orders:orderSlice,
-  products:productSlice,
+  users: userSlice,
+  orders: orderSlice,
+  products: productSlice,
+  suppliers: supplierSlice,
   modal: modalSlice,
-  dialog:dialogSlice
+  dialog: dialogSlice,
 });
 
 const store = configureStore({ reducer: rootReducer });

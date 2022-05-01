@@ -1,7 +1,4 @@
-import {
-  Stack,
-  TextField, Typography
-} from "@mui/material";
+import { Stack, TextField, Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Modal from "@mui/material/Modal";
@@ -9,12 +6,12 @@ import { post } from "axios";
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { openDialog } from "../../redux/dialogSlice";
+import { openUpdateProductModal } from "../../redux/modalSlice";
 import {
-  openUpdateProductModal
-} from "../../redux/modalSlice";
-import {
-  addListImage, deleteImage,
-  deleteS3, updateProduct
+  addListImage,
+  deleteImage,
+  deleteS3,
+  updateProduct,
 } from "../../redux/productSlice";
 import MyDialog from "../alert/MyDialog";
 
@@ -37,9 +34,7 @@ export default function UpdateProductModal({ check }) {
   const { products, images, categories, suppliers, isAddAttributed, product } =
     useSelector((state) => state.products);
   const [name, setName] = React.useState("");
-  const [description, setDescription] = React.useState(
-    ""
-  );
+  const [description, setDescription] = React.useState("");
   const [price, setPrice] = React.useState(0);
   const [discount, setDiscount] = React.useState(0);
   const { user } = useSelector((s) => s.auth);
@@ -47,7 +42,7 @@ export default function UpdateProductModal({ check }) {
   const [previewImages, setPreviewImages] = React.useState([]);
   const [image, setImage] = React.useState({});
   const [change, setChange] = React.useState(false);
-
+  console.log("xxxxx  ", product);
   const handleClose = async () => {
     dispatch(openUpdateProductModal());
   };
@@ -56,7 +51,7 @@ export default function UpdateProductModal({ check }) {
   const handleSave = async () => {
     var files = [];
     if (change === true && fileArray?.length > 0) {
-      const url = "http://localhost:9191/api/user-service/auth/upload";
+      const url = "http://165.22.105.148:9191/api/user-service/auth/upload";
 
       for (let i = 0; i < fileArray.length; i++) {
         var fd = new FormData();
@@ -88,13 +83,13 @@ export default function UpdateProductModal({ check }) {
     };
 
     const p = await dispatch(updateProduct(data));
-    if(images.length >0 && change===true && files.length >0){
+    if (images.length > 0 && change === true && files.length > 0) {
       for (let i = 0; i < images?.length; i++) {
         dispatch(deleteImage(images[i]?.id));
         dispatch(deleteS3(images[i]?.url));
       }
     }
-   
+
     for (let j = 0; j < files.length; j++) {
       let x = {
         url: files[j].data,
@@ -104,15 +99,14 @@ export default function UpdateProductModal({ check }) {
     }
 
     setChange(false);
-    setPreviewImages([])
-    setName("")
-    setDescription("")
-    setDiscount("")
-    setPrice("")
-    
-    dispatch(openUpdateProductModal());
-    dispatch(openDialog())
+    setPreviewImages([]);
+    setName("");
+    setDescription("");
+    setDiscount("");
+    setPrice("");
 
+    dispatch(openUpdateProductModal());
+    dispatch(openDialog());
   };
 
   const onChangeFile = (e) => {
@@ -128,6 +122,12 @@ export default function UpdateProductModal({ check }) {
       setFileArray(e.target.files);
     }
   };
+  React.useEffect(() => {
+    setName(product?.product?.name);
+    setPrice(product?.product?.price);
+    setDescription(product?.product?.description);
+    setDiscount(product?.product?.discount);
+  }, [product, dispatch]);
   return (
     <div>
       <MyDialog
@@ -156,7 +156,7 @@ export default function UpdateProductModal({ check }) {
                 id="filled-basic"
                 variant="filled"
                 style={{ width: "80%", marginBottom: "5px" }}
-                defaultValue={product?.product?.name}
+                defaultValue={name}
                 onChange={(e) => setName(e.target.value)}
               />
             </Stack>
@@ -171,10 +171,10 @@ export default function UpdateProductModal({ check }) {
               </Typography>
               <TextField
                 id="filled-basic"
-                inputProps={{ type: 'number'}}
+                inputProps={{ type: "number" }}
                 variant="filled"
                 style={{ width: "30%", marginBottom: "5px", marginRight: 22 }}
-                defaultValue={product?.product?.price}
+                defaultValue={price}
                 onChange={(e) => setPrice(e.target.value)}
               />
               <Typography
@@ -188,9 +188,9 @@ export default function UpdateProductModal({ check }) {
               <TextField
                 id="filled-basic"
                 variant="filled"
-                inputProps={{ type: 'number'}}
+                inputProps={{ type: "number" }}
                 style={{ width: "32%", marginBottom: "5px" }}
-                defaultValue={product?.product?.discount}
+                defaultValue={discount}
                 onChange={(e) => setDiscount(e.target.value)}
               />
             </Stack>
@@ -207,7 +207,7 @@ export default function UpdateProductModal({ check }) {
                 id="filled-basic"
                 variant="filled"
                 style={{ width: "80%", marginBottom: "5px" }}
-                defaultValue={product?.product?.description}
+                defaultValue={description}
                 onChange={(e) => setDescription(e.target.value)}
               />
             </Stack>
@@ -224,7 +224,7 @@ export default function UpdateProductModal({ check }) {
                 id="filled-basic"
                 variant="filled"
                 style={{ width: "30%", marginBottom: "5px", marginRight: 22 }}
-                value={product?.category?.name}
+                defaultValue={product?.category?.name}
               />
               <Typography
                 variant="h7"

@@ -9,6 +9,7 @@ const initialState = {
   attributes: [],
   errorMessage: "",
   product: {},
+  supplier: {},
   page: 1,
   searchByCastegory: undefined,
   searchBySupplier: undefined,
@@ -55,6 +56,7 @@ export const getAttribute = createAsyncThunk(
   async (params, { rejectWithValue }) => {
     try {
       const res = await productApi.getAttribute(params);
+      console.log("attribute  ", res);
       return res;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -66,7 +68,7 @@ export const addProduct = createAsyncThunk(
   async (params, { rejectWithValue }) => {
     try {
       const res = await productApi.addProduct(params);
-
+      console.log("res ", res)
       return res;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -221,8 +223,12 @@ export const getProductById = createAsyncThunk(
   async (params, { rejectWithValue }) => {
     try {
       const res = await productApi.getProductById(params);
+      console.log("products   ", res);
+
       return res;
     } catch (error) {
+      console.log("products errr  ", error.response);
+
       return rejectWithValue(error.response.data);
     }
   }
@@ -271,6 +277,57 @@ export const updateAttribute = createAsyncThunk(
     }
   }
 );
+export const updateSupplier = createAsyncThunk(
+  "updateSupplier",
+  async (params, { rejectWithValue }) => {
+    try {
+      const res = await productApi.updateSupplier(params);
+      console.log("ffffffffff ", res);
+      return res;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+export const deleteSupplier = createAsyncThunk(
+  "deleteSupplier",
+  async (params, { rejectWithValue }) => {
+    try {
+      const res = await productApi.deleteSupplier(params);
+      console.log("ddđ ", res);
+
+      return params;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+export const getSupplierById = createAsyncThunk(
+  "getSupplierById",
+  async (params, { rejectWithValue }) => {
+    try {
+      const res = await productApi.getSupplierById(params);
+      console.log("ddđ ", res);
+
+      return res;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+export const searchSupplier = createAsyncThunk(
+  "searchSupplier",
+  async (params, { rejectWithValue }) => {
+    try {
+      const res = await productApi.searchSupplier(params);
+      console.log("ddđ ", res);
+
+      return res;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
 const productSlice = createSlice({
   name: "products",
   initialState,
@@ -296,6 +353,11 @@ const productSlice = createSlice({
     setCurrentProduct: (state, action) => {
       state.product = action.payload;
     },
+    setCurrentSupplier: (state, action) => {
+      console.log("tesst ", action.payload);
+      state.supplier = action.payload;
+      console.log("tess t23 ", state.supplier);
+    },
   },
   extraReducers: {
     [getAllProduct.pending]: (state, action) => {},
@@ -315,7 +377,6 @@ const productSlice = createSlice({
     [deleteProduct.rejected]: (state, action) => {
       state.errorMessage = action.payload;
     },
-
     [getAllCategory.pending]: (state, action) => {},
     [getAllCategory.fulfilled]: (state, action) => {
       state.categories = action.payload;
@@ -333,14 +394,17 @@ const productSlice = createSlice({
     [getAttribute.pending]: (state, action) => {},
     [getAttribute.fulfilled]: (state, action) => {
       state.attributes = action.payload;
-      
     },
     [getAttribute.rejected]: (state, action) => {
       state.errorMessage = action.payload;
     },
     [addProduct.pending]: (state, action) => {},
     [addProduct.fulfilled]: (state, action) => {
+      console.log("aciton  ", action.payload)
       state.products.push(action.payload);
+      const s=state.products
+      state.products=s.reverse()
+      state.product=action.payload
     },
     [addProduct.rejected]: (state, action) => {
       state.errorMessage = action.payload;
@@ -429,14 +493,11 @@ const productSlice = createSlice({
       const p = state.products.find(
         (product) => product.product.id === action.payload.product.id
       );
-      if(p){
+      if (p) {
         p.product = action.payload.product;
       }
 
-     
-
       state.product = action.payload;
-
     },
     [updateProduct.rejected]: (state, action) => {
       state.errorMessage = action.payload;
@@ -455,6 +516,53 @@ const productSlice = createSlice({
     [getImagesByProductId.rejected]: (state, action) => {
       state.errorMessage = action.payload;
     },
+    [getSupplierById.pending]: (state, action) => {},
+    [getSupplierById.fulfilled]: (state, action) => {
+      state.supplier = action.payload;
+      console.log("kkkk  ", state.supplier)
+    },
+    [getSupplierById.rejected]: (state, action) => {
+      state.errorMessage = action.payload;
+    },
+    [deleteSupplier.pending]: (state, action) => {},
+    [deleteSupplier.fulfilled]: (state, action) => {
+      state.suppliers = current(state.suppliers).filter(
+        (p) => p.id != action.payload
+      );
+    },
+    [deleteSupplier.rejected]: (state, action) => {
+      state.errorMessage = action.payload;
+    },
+    [searchSupplier.pending]: (state, action) => {},
+    [searchSupplier.fulfilled]: (state, action) => {
+      state.suppliers = action.payload
+    },
+    [searchSupplier.rejected]: (state, action) => {
+      state.errorMessage = action.payload;
+    },
+    [updateSupplier.pending]: (state, action) => {},
+    [updateSupplier.fulfilled]: (state, action) => {
+      state.supplier = {};
+      // console.log("XXX ", action.payload);
+      // console.log("xthhfthh ", current(state.suppliers));
+
+      const p = state.suppliers.find((s) => s.id === action.payload.id);
+      console.log("xxx222 p ", current(p));
+      if (p) {
+        p.street = action.payload.street;
+        p.wards = action.payload.wards;
+        p.supplierName = action.payload.supplierName;
+        p.district = action.payload.district;
+        p.city = action.payload.city;
+        p.phoneNumber = action.payload.phoneNumber;
+      }
+
+      // console.log("xxx222 p22ss ", current(p));
+      console.log("xxx222 p22szzzs ", state.supplier);
+    },
+    [updateSupplier.rejected]: (state, action) => {
+      state.errorMessage = action.payload;
+    },
   },
 });
 
@@ -467,5 +575,6 @@ export const {
   setSearchBySupplier,
   unAddAttributed,
   setCurrentProduct,
+  setCurrentSupplier,
 } = productSlice.actions;
 export default reducer;
