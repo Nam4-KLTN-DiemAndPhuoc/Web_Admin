@@ -107,6 +107,7 @@ function ChildModal({ params }) {
   };
   const handleClose = () => {
     setOpen(false);
+    dispatch(openModal());
   };
 
   const handleSaveAttribute = () => {
