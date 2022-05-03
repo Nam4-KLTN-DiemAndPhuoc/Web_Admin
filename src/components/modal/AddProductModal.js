@@ -120,6 +120,7 @@ function ChildModal({ params }) {
 
       dispatch(addAttribute(params));
       dispatch(openDialog());
+      dispatch(openModal())
     }
     handleClose();
   };
