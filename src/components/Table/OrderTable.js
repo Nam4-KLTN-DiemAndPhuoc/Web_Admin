@@ -43,8 +43,9 @@ function Row(props) {
     setStatus(event.target.value);
   };
   const changeStatus = (row) => {
+    console.log("Roww ", row)
     const params = {
-      id: row.id,
+      id: row.id2,
       status:
         status === "Đang vận chuyển"
           ? "PREPARING_TO_SHIP"
@@ -171,6 +172,7 @@ function Row(props) {
 
 Row.propTypes = {
   row: PropTypes.shape({
+    id2: PropTypes.number,
     id: PropTypes.number.isRequired,
     CustomerName: PropTypes.string.isRequired,
     orderDay: PropTypes.string.isRequired,
@@ -259,6 +261,7 @@ export default function OrderTable({ data }) {
                 ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row) => {
                   var x = {
+                    id2:row?.order?.id,
                     id: row?.order?.codeOrder,
                     CustomerName: row?.user?.userName,
                     orderDay: row?.order?.orderDay,
