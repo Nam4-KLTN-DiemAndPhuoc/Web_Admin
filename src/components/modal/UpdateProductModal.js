@@ -128,7 +128,7 @@ export default function UpdateProductModal({ check }) {
     setDescription(product?.product?.description);
     setDiscount(product?.product?.discount);
     console.log("1111111111111111111111", product?.product?.name);
-  }, [product, dispatch]);
+  }, [product]);
   return (
     <div>
       <MyDialog
@@ -151,14 +151,14 @@ export default function UpdateProductModal({ check }) {
                 gutterBottom
                 component="div"
               >
-                Tên sản phẩm:{" "}
+                Tên sản phẩm:
               </Typography>
               <TextField
                 id="filled-basic"
                 variant="filled"
                 style={{ width: "80%", marginBottom: "5px" }}
-                defaultValue={name}
                 onChange={(e) => setName(e.target.value)}
+                value={name}
               />
             </Stack>
             <Stack direction="row">
@@ -175,7 +175,7 @@ export default function UpdateProductModal({ check }) {
                 inputProps={{ type: "number" }}
                 variant="filled"
                 style={{ width: "30%", marginBottom: "5px", marginRight: 22 }}
-                defaultValue={price}
+                value={price}
                 onChange={(e) => setPrice(e.target.value)}
               />
               <Typography
@@ -191,7 +191,7 @@ export default function UpdateProductModal({ check }) {
                 variant="filled"
                 inputProps={{ type: "number" }}
                 style={{ width: "32%", marginBottom: "5px" }}
-                defaultValue={discount}
+                value={discount}
                 onChange={(e) => setDiscount(e.target.value)}
               />
             </Stack>
@@ -208,7 +208,7 @@ export default function UpdateProductModal({ check }) {
                 id="filled-basic"
                 variant="filled"
                 style={{ width: "80%", marginBottom: "5px" }}
-                defaultValue={description}
+                value={description}
                 onChange={(e) => setDescription(e.target.value)}
               />
             </Stack>
@@ -225,7 +225,7 @@ export default function UpdateProductModal({ check }) {
                 id="filled-basic"
                 variant="filled"
                 style={{ width: "30%", marginBottom: "5px", marginRight: 22 }}
-                defaultValue={product?.category?.name}
+                value={product?.category?.name}
               />
               <Typography
                 variant="h7"

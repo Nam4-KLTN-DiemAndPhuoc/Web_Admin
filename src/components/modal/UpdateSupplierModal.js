@@ -123,7 +123,7 @@ function UpdateSupplierModal({ check }) {
                 label="Tên nhà cung cấp"
                 variant="filled"
                 style={{ width: "100%", marginTop: "5px" }}
-                defaultValue={name}
+                value={name}
                 onChange={(e) => setName(e.target.value)}
               />
 
@@ -136,7 +136,7 @@ function UpdateSupplierModal({ check }) {
                   marginTop: "5px",
                   marginBottom: "10px",
                 }}
-                defaultValue={phone}
+                value={phone}
                 onChange={(e) => setPhone(e.target.value)}
               />
               <div style={{ marginBottom: 10 }}>
@@ -190,7 +190,7 @@ function UpdateSupplierModal({ check }) {
                 label="Tên đường, số nhà"
                 variant="filled"
                 style={{ width: "100%", marginTop: "10px" }}
-                defaultValue={street}
+                value={street}
                 onChange={(e) => setStreet(e.target.value)}
               />
               {/* <button

@@ -119,19 +119,14 @@ const orderSlice = createSlice({
     [searchOrder.pending]: (state, action) => {},
     [searchOrder.fulfilled]: (state, action) => {
       const ods = action.payload;
-      console.log("action.payload", action.payload);
-      if (action.payload[0]?.order.status === "ORDER_IN_PROGRESS") {
+
+      if (state.status === "ORDER_IN_PROGRESS") {
         state.in_progress_order = ods.reverse();
-      } else if (action.payload[0]?.order.status === "PREPARING_TO_SHIP") {
+      } else if (state.status === "PREPARING_TO_SHIP") {
         state.prepare_to_ship_order = ods.reverse();
-      } else if (action.payload[0]?.order.status === "DELIVERED") {
+      } else if (state.status === "DELIVERED") {
         state.delivered_order = ods.reverse();
-      } else if (action.payload[0]?.order.status === "CANCELED") {
-        state.canceled_order = ods.reverse();
-      } else {
-        state.in_progress_order = ods.reverse();
-        state.prepare_to_ship_order = ods.reverse();
-        state.delivered_order = ods.reverse();
+      } else if (state.status === "CANCELED") {
         state.canceled_order = ods.reverse();
       }
     },

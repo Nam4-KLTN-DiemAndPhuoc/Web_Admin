@@ -45,10 +45,17 @@ export default function () {
 
   useEffect(() => {
     if (paymentMethod === "online" || paymentMethod === "offline") {
-      console.log("AAAAAAAAAAAA", key);
       dispatch(
         searchOrder({
           paymentMethod: paymentMethod,
+          status: status,
+          codeOrder: key,
+        })
+      );
+    } else {
+      dispatch(
+        searchOrder({
+          paymentMethod: "",
           status: status,
           codeOrder: key,
         })
