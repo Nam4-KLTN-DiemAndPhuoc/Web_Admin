@@ -127,6 +127,7 @@ export default function UpdateProductModal({ check }) {
     setPrice(product?.product?.price);
     setDescription(product?.product?.description);
     setDiscount(product?.product?.discount);
+    console.log("1111111111111111111111", product?.product?.name);
   }, [product, dispatch]);
   return (
     <div>

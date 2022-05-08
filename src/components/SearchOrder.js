@@ -45,7 +45,7 @@ export default function () {
 
   useEffect(() => {
     if (paymentMethod === "online" || paymentMethod === "offline") {
-      console.log(key);
+      console.log("AAAAAAAAAAAA", key);
       dispatch(
         searchOrder({
           paymentMethod: paymentMethod,
@@ -83,12 +83,7 @@ export default function () {
           inputProps={{ "aria-label": "Mã đơn hàng " }}
           onChange={(e) => handleClick(e)}
         />
-        <IconButton
-          type="submit"
-          sx={{ p: "10px" }}
-          aria-label="Mã đơn hàng"
-         
-        >
+        <IconButton type="submit" sx={{ p: "10px" }} aria-label="Mã đơn hàng">
           <SearchIcon />
         </IconButton>
       </Paper>

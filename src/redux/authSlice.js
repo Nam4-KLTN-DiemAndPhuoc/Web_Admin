@@ -61,9 +61,8 @@ const authSlice = createSlice({
       if (action.payload.user.role.name === "ROLE_ADMIN") {
         state.token = action.payload.token;
         state.user = action.payload.user;
-      }
-      else{
-        state.errorMessage="Bạn không có quyền truy cập trang web này !"
+      } else {
+        state.errorMessage = "Bạn không có quyền truy cập trang web này !";
       }
     },
     [login.rejected]: (state, action) => {
@@ -80,10 +79,8 @@ const authSlice = createSlice({
     // refreshToken
     [refreshToken.pending]: (state, action) => {},
     [refreshToken.fulfilled]: (state, action) => {
-      if (state.token) {
-        state.token = action.payload.token;
-        state.user = action.payload.user;
-      }
+      state.token = action.payload.token;
+      state.user = action.payload.user;
     },
     [refreshToken.rejected]: (state, action) => {
       console.log("Token hết hạn vui lòng đăng nhập lại");
