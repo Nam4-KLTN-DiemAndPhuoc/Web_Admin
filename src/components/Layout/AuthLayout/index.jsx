@@ -8,7 +8,7 @@ function LoginPage({children}) {
     return (
         <div className={classes.container}>
             <h3 className={classes.header}>
-                <Avatar className={classes.avatar} src="" />
+                <Avatar className={classes.avatar} src="logo.jpg" />
             </h3>
             {children}
             <div className={classes.footer}>

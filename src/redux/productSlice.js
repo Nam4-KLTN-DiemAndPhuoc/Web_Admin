@@ -56,7 +56,6 @@ export const getAttribute = createAsyncThunk(
   async (params, { rejectWithValue }) => {
     try {
       const res = await productApi.getAttribute(params);
-      console.log("attribute  ", res);
       return res;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -68,7 +67,6 @@ export const addProduct = createAsyncThunk(
   async (params, { rejectWithValue }) => {
     try {
       const res = await productApi.addProduct(params);
-      console.log("res ", res)
       return res;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -223,11 +221,9 @@ export const getProductById = createAsyncThunk(
   async (params, { rejectWithValue }) => {
     try {
       const res = await productApi.getProductById(params);
-      console.log("products   ", res);
 
       return res;
     } catch (error) {
-      console.log("products errr  ", error.response);
 
       return rejectWithValue(error.response.data);
     }
@@ -282,7 +278,6 @@ export const updateSupplier = createAsyncThunk(
   async (params, { rejectWithValue }) => {
     try {
       const res = await productApi.updateSupplier(params);
-      console.log("ffffffffff ", res);
       return res;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -294,7 +289,6 @@ export const deleteSupplier = createAsyncThunk(
   async (params, { rejectWithValue }) => {
     try {
       const res = await productApi.deleteSupplier(params);
-      console.log("ddđ ", res);
 
       return params;
     } catch (error) {
@@ -307,7 +301,6 @@ export const getSupplierById = createAsyncThunk(
   async (params, { rejectWithValue }) => {
     try {
       const res = await productApi.getSupplierById(params);
-      console.log("ddđ ", res);
 
       return res;
     } catch (error) {
@@ -320,7 +313,6 @@ export const searchSupplier = createAsyncThunk(
   async (params, { rejectWithValue }) => {
     try {
       const res = await productApi.searchSupplier(params);
-      console.log("ddđ ", res);
 
       return res;
     } catch (error) {
@@ -354,9 +346,7 @@ const productSlice = createSlice({
       state.product = action.payload;
     },
     setCurrentSupplier: (state, action) => {
-      console.log("tesst ", action.payload);
       state.supplier = action.payload;
-      console.log("tess t23 ", state.supplier);
     },
   },
   extraReducers: {
@@ -400,7 +390,6 @@ const productSlice = createSlice({
     },
     [addProduct.pending]: (state, action) => {},
     [addProduct.fulfilled]: (state, action) => {
-      console.log("aciton  ", action.payload)
       state.products.push(action.payload);
       const s=state.products
       state.products=s.reverse()
@@ -519,7 +508,6 @@ const productSlice = createSlice({
     [getSupplierById.pending]: (state, action) => {},
     [getSupplierById.fulfilled]: (state, action) => {
       state.supplier = action.payload;
-      console.log("kkkk  ", state.supplier)
     },
     [getSupplierById.rejected]: (state, action) => {
       state.errorMessage = action.payload;
@@ -543,11 +531,8 @@ const productSlice = createSlice({
     [updateSupplier.pending]: (state, action) => {},
     [updateSupplier.fulfilled]: (state, action) => {
       state.supplier = {};
-      // console.log("XXX ", action.payload);
-      // console.log("xthhfthh ", current(state.suppliers));
 
       const p = state.suppliers.find((s) => s.id === action.payload.id);
-      console.log("xxx222 p ", current(p));
       if (p) {
         p.street = action.payload.street;
         p.wards = action.payload.wards;
@@ -557,8 +542,6 @@ const productSlice = createSlice({
         p.phoneNumber = action.payload.phoneNumber;
       }
 
-      // console.log("xxx222 p22ss ", current(p));
-      console.log("xxx222 p22szzzs ", state.supplier);
     },
     [updateSupplier.rejected]: (state, action) => {
       state.errorMessage = action.payload;

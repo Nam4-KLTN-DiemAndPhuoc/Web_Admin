@@ -14,7 +14,6 @@ import { searchOrder } from "../redux/orderSlice";
 export default function () {
   var options = ["online", "offline"];
   const { status } = useSelector((s) => s.orders);
-  console.log("status ", status);
   const [paymentMethod, setPaymentMethod] = useState("");
   const [key, setKey] = useState("");
   const dispatch = useDispatch();
@@ -24,7 +23,6 @@ export default function () {
 
     setKey(e.target.value);
     if (e.target.value != "") {
-      console.log(e.target.value);
       dispatch(
         searchOrder({
           paymentMethod:
@@ -39,7 +37,6 @@ export default function () {
   };
 
   const setChange = (data) => {
-    console.log(data);
     setPaymentMethod(data);
   };
 

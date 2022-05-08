@@ -42,7 +42,6 @@ export default function UpdateProductModal({ check }) {
   const [previewImages, setPreviewImages] = React.useState([]);
   const [image, setImage] = React.useState({});
   const [change, setChange] = React.useState(false);
-  console.log("xxxxx  ", product);
   const handleClose = async () => {
     dispatch(openUpdateProductModal());
   };
@@ -127,7 +126,6 @@ export default function UpdateProductModal({ check }) {
     setPrice(product?.product?.price);
     setDescription(product?.product?.description);
     setDiscount(product?.product?.discount);
-    console.log("1111111111111111111111", product?.product?.name);
   }, [product]);
   return (
     <div>

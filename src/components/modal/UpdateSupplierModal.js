@@ -33,7 +33,6 @@ function UpdateSupplierModal({ check }) {
   const [street, setStreet] = useState();
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
-  console.log("supplier  ", supplier);
   const { state, onCitySelect, onDistrictSelect, onWardSelect, onSubmit } =
     useLocationForm(false);
 
@@ -64,7 +63,6 @@ function UpdateSupplierModal({ check }) {
         district: selectedDistrict ? selectedDistrict.label : supplier.district,
         city: selectedCity ? selectedCity.label : supplier.city,
       };
-      console.log("dsts ", data);
       dispatch(updateSupplier(data));
       dispatch(openDialog());
 

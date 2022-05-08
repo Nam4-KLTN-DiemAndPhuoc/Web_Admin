@@ -58,7 +58,6 @@ export default function SupplierTable() {
   };
 
   const handleUpdateSupplier = (s) => {
-    console.log(" update   ", s);
     dispatch(getSupplierById(s.id));
     dispatch(openUpdateSupplierModal());
   };

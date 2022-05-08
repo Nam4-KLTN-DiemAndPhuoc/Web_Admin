@@ -37,10 +37,10 @@ export default function UpdateAttributeModal({ check }) {
   const handleSaveAttribute = () => {
     if (s > 0 || m > 0 || l > 0 || xl > 0) {
       const params = [
-        { size: "S", amount: s!== -1 ? s:(attributes?.find(a=> a.size ==="S")?.amount >0 ? attributes?.find(a=> a.size =="S")?.amount :0) , product: product?.product },
-        { size: "M", amount: m!== -1 ? m :(attributes?.find(a=> a.size ==="M")?.amount >0 ? attributes?.find(a=> a.size ==="M")?.amount :0), product: product?.product },
-        { size: "L", amount: l!== -1 ? l:(attributes?.find(a=> a.size ==="L")?.amount >0 ? attributes?.find(a=> a.size ==="L")?.amount :0), product: product?.product },
-        { size: "XL", amount: xl!== -1 ? xl :(attributes?.find(a=> a.size ==="XL")?.amount >0 ? attributes?.find(a=> a.size ==="XL")?.amount :0), product: product?.product },
+        { id:(attributes?.find(a=> a.size ==="S"))?.id ,size: "S", amount: s!== -1 ? s:(attributes?.find(a=> a.size ==="S")?.amount >0 ? attributes?.find(a=> a.size =="S")?.amount :0) , product: product?.product },
+        {id:(attributes?.find(a=> a.size ==="M"))?.id, size: "M", amount: m!== -1 ? m :(attributes?.find(a=> a.size ==="M")?.amount >0 ? attributes?.find(a=> a.size ==="M")?.amount :0), product: product?.product },
+        { id:(attributes?.find(a=> a.size ==="L"))?.id,size: "L", amount: l!== -1 ? l:(attributes?.find(a=> a.size ==="L")?.amount >0 ? attributes?.find(a=> a.size ==="L")?.amount :0), product: product?.product },
+        {id:(attributes?.find(a=> a.size ==="XL"))?.id, size: "XL", amount: xl!== -1 ? xl :(attributes?.find(a=> a.size ==="XL")?.amount >0 ? attributes?.find(a=> a.size ==="XL")?.amount :0), product: product?.product },
       ];
         dispatch(updateAttribute(params))
       dispatch(openDialog());

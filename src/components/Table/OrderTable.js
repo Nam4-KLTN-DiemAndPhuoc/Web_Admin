@@ -43,7 +43,6 @@ function Row(props) {
     setStatus(event.target.value);
   };
   const changeStatus = (row) => {
-    console.log("Roww ", row)
     const params = {
       id: row.id2,
       status:
@@ -55,7 +54,6 @@ function Row(props) {
           ? "CANCELED"
           : "",
     };
-
     if (
       window.confirm(
         "Bạn có chắc chắn muốn chuyển trạng thái đơn hàng thành " +
@@ -217,7 +215,6 @@ export default function OrderTable({ data }) {
     orderDetails,
  
   } = useSelector((state) => state.orders);
-  console.log(data)
 
   const result =
     data === "ORDER_IN_PROGRESS"

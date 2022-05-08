@@ -44,7 +44,6 @@ const productApi = {
     return axiosClient.get(url);
   },
   searchSupplier: (p) => {
-    console.log("PP  ", p);
     const url = `supplier-service/supplier/search?key=${p.key}&city=${p.city}&district=${p.district}&ward=${p.ward}`;
     return axiosClient.get(url);
   },
@@ -101,12 +100,10 @@ const productApi = {
     return axiosClient.get(url);
   },
   updateProduct: (params) => {
-    console.log(params);
     const url = `product-service/admin/product/update`;
     return axiosClient.post(url, params);
   },
   updateAttribute: (params) => {
-    console.log(params);
     const url = `product-service/admin/attribute/update`;
     return axiosClient.post(url, params);
   },

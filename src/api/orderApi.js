@@ -11,7 +11,6 @@ const orderApi = {
   },
   searchOrder: (params) => {
     const url = `order-service/admin/search?code=${params.codeOrder}&status=${params.status}&methodPayment=${params.paymentMethod}`;
-    console.log("url", url);
     return axiosClient.get(url);
   },
   getOrderDetailByOrderId: (id) => {

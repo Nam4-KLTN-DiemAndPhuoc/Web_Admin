@@ -4,8 +4,8 @@ export default makeStyles((theme)=> ({
     container: {
         width: "100%",
         height: "100vh",
-        background: `linear-gradient(to bottom, rgba(47, 93, 98, 0.9), rgba(94, 139, 126,1)),
-            url(https://images.unsplash.com/photo-1461280360983-bd93eaa5051b?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=80)`,
+        background: `linear-gradient(to bottom,rgba(170,123,95,0.9),rgba(100,123,95,1)),
+            url(https://giakethoitrang.com/Images/kinh-nghiem-mo-shop-quan-%C3%A1o.jpg)`,
         backgroundSize: "cover",
         display:"flex",
         flexDirection:"column",

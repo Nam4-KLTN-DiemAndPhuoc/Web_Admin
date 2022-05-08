@@ -73,10 +73,10 @@ function Dashboard(props) {
     } else if (text === "Sản phẩm") {
       setCheck("Sản phẩm");
     } else if (text === "Đăng xuất") {
-      if (window.confirm("Bạn có chắc chắn muốn đăng xuất không? ")) {
+      // if (window.confirm("Bạn có chắc chắn muốn đăng xuất không? ")) {
         dispatch(logout());
         navigate("/login", (require = "true"));
-      }
+      // }
     } else if (text === "Nhà cung cấp") {
       dispatch(getAllSupplier());
       setCheck("Nhà cung cấp");

@@ -14,7 +14,6 @@ export const getSuppliers = createAsyncThunk(
   async (params, { rejectWithValue }) => {
     try {
       const res = await supplierApi.getAll(params);
-      console.log("vvv   ", res)
       return res;
     } catch (error) {
       return rejectWithValue(error.response.data);

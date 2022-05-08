@@ -47,8 +47,6 @@ export default function SearchSupplier() {
   };
   const handleSearch = (e) => {
     e.preventDefault();
-    // console.log(" serach  ", selectedCity.label, selectedDistrict.label,
-    //  selectedWard.label, );
     const data = {
       key: text,
       city: selectedCity != null ? selectedCity?.label : "",

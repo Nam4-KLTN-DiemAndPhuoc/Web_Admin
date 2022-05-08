@@ -51,10 +51,7 @@ export const searchOrder = createAsyncThunk(
   "searchOrder",
   async (params, { rejectWithValue }) => {
     try {
-      console.log(params);
       const res = await orderApi.searchOrder(params);
-      console.log("RESSSSSSSSSSSSSSSSSS", res);
-
       return res;
     } catch (error) {
       return rejectWithValue(error.response.statusText);
@@ -66,7 +63,6 @@ export const getAllOrder = createAsyncThunk(
   async (params, { rejectWithValue }) => {
     try {
       const res = await orderApi.getAll(params);
-      console.log(res);
 
       return res;
     } catch (error) {

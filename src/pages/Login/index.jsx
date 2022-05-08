@@ -32,7 +32,6 @@ export default function Login() {
     };
     dispatch(removeErrMessage());
     const res = await dispatch(login(data));
-    console.log(token);
     if (token) {
       dispatch(removeErrMessage());
       navigate("/", (require = "true"));

@@ -12,10 +12,8 @@ export const login = createAsyncThunk(
   async (params, { rejectWithValue }) => {
     try {
       const res = await authApi.login(params);
-      console.log("xxx ", res);
       if (res.user.role.name === "ROLE_ADMIN") {
         await Cookies.set("token", res.token);
-        console.log(Cookies.get("token"));
       }
       return res;
     } catch (error) {
@@ -33,7 +31,6 @@ export const refreshToken = createAsyncThunk(
       await Cookies.set("token", res.token);
       return res;
     } catch (error) {
-      console.log(error);
       return rejectWithValue(error.response.data);
     }
   }
@@ -42,7 +39,6 @@ export const logout = createAsyncThunk("logout", async (params, thunkAPI) => {
   try {
     await Cookies.remove("token");
   } catch (error) {
-    console.log(error);
   }
 });
 
@@ -83,7 +79,6 @@ const authSlice = createSlice({
       state.user = action.payload.user;
     },
     [refreshToken.rejected]: (state, action) => {
-      console.log("Token hết hạn vui lòng đăng nhập lại");
     },
   },
 });
