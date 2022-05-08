@@ -6,7 +6,7 @@ import TabList from "@mui/lab/TabList";
 import TabPanel from "@material-ui/lab/TabPanel";
 import OrderTable from "./Table/OrderTable";
 import { useDispatch, useSelector } from "react-redux";
-import { getByStatus } from "../redux/orderSlice";
+import { getByStatus, setStatusOrder } from "../redux/orderSlice";
 
 export default function TabCustom() {
   
@@ -15,6 +15,7 @@ const dispatch =useDispatch()
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
+    dispatch(setStatusOrder(newValue))
   };
  
 

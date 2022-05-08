@@ -14,11 +14,19 @@ import Paper from "@mui/material/Paper";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import { useDispatch, useSelector } from "react-redux";
-import { Autocomplete, Button, FormControl, InputLabel, MenuItem, Select, TablePagination, TextField } from "@mui/material";
+import {
+  Autocomplete,
+  Button,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  TablePagination,
+  TextField,
+} from "@mui/material";
 import { getOrderDetailByOrderId, updateStatus } from "../../redux/orderSlice";
 import moment from "moment";
-
-
+import SearchOrder from "../SearchOrder";
 
 function Row(props) {
   const { row } = props;
@@ -28,35 +36,34 @@ function Row(props) {
     dispatch(getOrderDetailByOrderId(id));
     setOpen(!open);
   };
-  const [status, setStatus] = React.useState('');
-
-
-  
+  const [status, setStatus] = React.useState("");
 
   const handleChange = (event) => {
-    event.preventDefault()
+    event.preventDefault();
     setStatus(event.target.value);
-   
   };
   const changeStatus = (row) => {
     const params = {
       id: row.id,
-      status:status==="Đang vận chuyển"?"PREPARING_TO_SHIP":(
-        status=== "Đã giao"?"DELIVERED":(status==="Hủy"?"CANCELED":"")
-      ),
-     
+      status:
+        status === "Đang vận chuyển"
+          ? "PREPARING_TO_SHIP"
+          : status === "Đã giao"
+          ? "DELIVERED"
+          : status === "Hủy"
+          ? "CANCELED"
+          : "",
     };
-  
-    if( window.confirm(
-      "Bạn có chắc chắn muốn chuyển trạng thái đơn hàng thành " +
-      status  +
-        " không ?"
-    )){
+
+    if (
+      window.confirm(
+        "Bạn có chắc chắn muốn chuyển trạng thái đơn hàng thành " +
+          status +
+          " không ?"
+      )
+    ) {
       dispatch(updateStatus(params));
-    
     }
-  
- 
   };
   return (
     <React.Fragment>
@@ -74,42 +81,37 @@ function Row(props) {
           {row.id}
         </TableCell>
         <TableCell align="right">{row.CustomerName}</TableCell>
-        <TableCell align="right">{
-        moment(row.orderDay).format("MM/DD/YYYY, h:mm:ss a")
-        }</TableCell>
-        
         <TableCell align="right">
-          {
-        moment(row.expectedReciverDay).format("MM/DD/YYYY, h:mm:ss a")
+          {moment(row.orderDay).format("MM/DD/YYYY, h:mm:ss a")}
+        </TableCell>
 
-          }
+        <TableCell align="right">
+          {moment(row.expectedReciverDay).format("MM/DD/YYYY, h:mm:ss a")}
         </TableCell>
         <TableCell align="right">{row.discount}</TableCell>
         <TableCell align="right">{row.totalPrice}</TableCell>
+        <TableCell align="right">{row.paymentMethod}</TableCell>
         <TableCell align="right">{row.status}</TableCell>
         <TableCell align="right">
-        <Box sx={{ minWidth: 120 }}>
-      <FormControl fullWidth>
-        <InputLabel id="demo-simple-select-label">Trạng thái</InputLabel>
-        <Select
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
-          value={status}
-          label="Trạng thái"
-          onChange={handleChange}
-        // onSelect={(id) => changeStatus(row)}
-         
-        >
-         {row.action.map(x=>(<MenuItem value={x}  >{x}</MenuItem>))}
-          
-        </Select>
-      </FormControl>
+          <Box sx={{ minWidth: 120 }}>
+            <FormControl fullWidth>
+              <InputLabel id="demo-simple-select-label">Trạng thái</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={status}
+                label="Trạng thái"
+                onChange={handleChange}
+                // onSelect={(id) => changeStatus(row)}
+              >
+                {row.action.map((x) => (
+                  <MenuItem value={x}>{x}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
 
-
-
-          <Button onClick={(id) => changeStatus(row)}>Cập nhật</Button>
-
-    </Box>
+            <Button onClick={(id) => changeStatus(row)}>Cập nhật</Button>
+          </Box>
         </TableCell>
       </TableRow>
       <TableRow>
@@ -120,7 +122,7 @@ function Row(props) {
                 Chi tiết hóa đơn
               </Typography>
               <Table size="small" aria-label="purchases">
-                <TableHead >
+                <TableHead>
                   <TableRow>
                     <TableCell>Sản phẩm</TableCell>
                     <TableCell>Hình ảnh</TableCell>
@@ -132,20 +134,28 @@ function Row(props) {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {row.details.map((historyRow,i) => (
+                  {row.details.map((historyRow, i) => (
                     <TableRow key={i}>
                       <TableCell component="th" scope="row">
                         {historyRow.productName}
                       </TableCell>
                       <TableCell>
-                        <img src={historyRow.image} style={{width:"200px"}} />
+                        <img
+                          src={historyRow.image}
+                          style={{ width: "200px" }}
+                        />
                       </TableCell>
                       <TableCell align="right">{historyRow.price}</TableCell>
                       <TableCell align="right">{historyRow.amount}</TableCell>
                       <TableCell align="right">{historyRow.discount}</TableCell>
 
                       <TableCell align="right">
-                        {Math.round(historyRow.amount * historyRow.price )-(Math.round(historyRow.amount * historyRow.price * historyRow.discount))}
+                        {Math.round(historyRow.amount * historyRow.price) -
+                          Math.round(
+                            historyRow.amount *
+                              historyRow.price *
+                              historyRow.discount
+                          )}
                       </TableCell>
                     </TableRow>
                   ))}
@@ -167,13 +177,14 @@ Row.propTypes = {
     expectedReciverDay: PropTypes.string.isRequired,
     discount: PropTypes.number.isRequired,
     totalPrice: PropTypes.number.isRequired,
+    paymentMethod: PropTypes.string.isRequired,
     status: PropTypes.string.isRequired,
     action: PropTypes.array.isRequired,
 
     details: PropTypes.arrayOf(
       PropTypes.shape({
         productName: PropTypes.string.isRequired,
-        image:PropTypes.string.isRequired,
+        image: PropTypes.string.isRequired,
         price: PropTypes.number.isRequired,
 
         amount: PropTypes.number.isRequired,
@@ -182,8 +193,6 @@ Row.propTypes = {
     ).isRequired,
   }).isRequired,
 };
-
-
 
 export default function OrderTable({ data }) {
   const [page, setPage] = React.useState(0);
@@ -204,105 +213,106 @@ export default function OrderTable({ data }) {
     prepare_to_ship_order,
     canceled_order,
     orderDetails,
+ 
   } = useSelector((state) => state.orders);
+  console.log(data)
 
-  const result=
-    
+  const result =
     data === "ORDER_IN_PROGRESS"
       ? in_progress_order
       : data === "PREPARING_TO_SHIP"
       ? prepare_to_ship_order
       : data === "DELIVERED"
       ? delivered_order
+    
       : canceled_order;
-     
-
-
 
   return (
-    <Paper sx={{ width: "100%" }}>
-      <TableContainer component={Paper}>
-        <Table aria-label="collapsible table">
-          <TableHead>
-            <TableRow>
-              <TableCell />
-              <TableCell>Mã đơn hàng</TableCell>
-              <TableCell align="right">Tên khách hàng</TableCell>
-              <TableCell align="right">Ngày đặt</TableCell>
-              <TableCell align="right">
-              { data === "ORDER_IN_PROGRESS"
-      ? "Ngày giao dự kiến"
-      : data === "PREPARING_TO_SHIP"
-      ? "Ngày giao dự kiến"
-      : data === "DELIVERED"
-      ? "Ngày nhận"
-      : "Ngày hủy"}
-              </TableCell>
-              <TableCell align="right">Giảm giá</TableCell>
-              <TableCell align="right">Tổng tiền</TableCell>
-              <TableCell align="right">Trạng thái</TableCell>
-              <TableCell align="right">Đổi trạng thái</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {
-            result
-              ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((row) => {
-                var x = {
-                  id: row?.order?.id,
-                  CustomerName: row?.user?.userName,
-                  orderDay: row?.order?.orderDay,
-                  expectedReciverDay: 
-                  row?.order?.status === "ORDER_IN_PROGRESS"
-                      ? (row?.order?.expectedReciverDay)
-                      : row?.order?.status === "PREPARING_TO_SHIP"
-                      ? (row?.order?.expectedReciverDay)
-                      : row?.order?.status === "DELIVERED"
-                      ? row?.order?.actualReciverDay
-                      : row?.order?.canceledDay,
-                 
-                  discount: row?.order?.discount,
-                  totalPrice: row?.order?.totalPrice,
-                  status:
-                    row?.order?.status === "ORDER_IN_PROGRESS"
-                      ? "Đơn hàng chưa xác nhận"
-                      : row?.order?.status === "PREPARING_TO_SHIP"
-                      ? "Đang vận chuyển"
-                      : row?.order?.status === "DELIVERED"
-                      ? "Đã giao"
-                      : "Hủy",
+    <div>
+      <Paper sx={{ width: "100%" }}>
+        <TableContainer component={Paper}>
+          <Table aria-label="collapsible table">
+            <TableHead>
+              <TableRow>
+                <TableCell />
+                <TableCell>Mã đơn hàng</TableCell>
+                <TableCell align="right">Tên khách hàng</TableCell>
+                <TableCell align="right">Ngày đặt</TableCell>
+                <TableCell align="right">
+                  {data === "ORDER_IN_PROGRESS"
+                    ? "Ngày giao dự kiến"
+                    : data === "PREPARING_TO_SHIP"
+                    ? "Ngày giao dự kiến"
+                    : data === "DELIVERED"
+                    ? "Ngày nhận"
+                    : "Ngày hủy"}
+                </TableCell>
+                <TableCell align="right">Giảm giá</TableCell>
+                <TableCell align="right">Tổng tiền</TableCell>
+                <TableCell align="right">Phương thức thanh toán</TableCell>
+                <TableCell align="right">Trạng thái</TableCell>
+                <TableCell align="right">Đổi trạng thái</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {result
+                ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((row) => {
+                  var x = {
+                    id: row?.order?.codeOrder,
+                    CustomerName: row?.user?.userName,
+                    orderDay: row?.order?.orderDay,
+                    expectedReciverDay:
+                      row?.order?.status === "ORDER_IN_PROGRESS"
+                        ? row?.order?.expectedReciverDay
+                        : row?.order?.status === "PREPARING_TO_SHIP"
+                        ? row?.order?.expectedReciverDay
+                        : row?.order?.status === "DELIVERED"
+                        ? row?.order?.actualReciverDay
+                        : row?.order?.canceledDay,
 
-                  action:
-                    row?.order?.status === "ORDER_IN_PROGRESS"
-                      ? ["Đang vận chuyển","Hủy"]
-                      : row?.order?.status === "PREPARING_TO_SHIP"
-                      ? ["Đã giao","Hủy"]
-                      
-                      : [],
-                  details: orderDetails?.map((o) => ({
-                    productName: o?.product?.name,
-                    image:o?.product?.avatar,
-                    price: o?.product?.price,
-                    amount: o?.orderDetail?.amount,
-                    discount:o?.product?.discount,
-                    total: o?.product?.price * o?.product?.amount,
-                  })),
-                };
-                return <Row key={row.name} row={x} />;
-              })}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <TablePagination
-        rowsPerPageOptions={[10, 25, 100]}
-        component="div"
-        count={result.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      />
-    </Paper>
+                    discount: row?.order?.discount,
+                    totalPrice: row?.order?.totalPrice,
+                    paymentMethod: row?.order?.paymentMethod,
+                    status:
+                      row?.order?.status === "ORDER_IN_PROGRESS"
+                        ? "Đơn hàng chưa xác nhận"
+                        : row?.order?.status === "PREPARING_TO_SHIP"
+                        ? "Đang vận chuyển"
+                        : row?.order?.status === "DELIVERED"
+                        ? "Đã giao"
+                        : "Hủy",
+
+                    action:
+                      row?.order?.status === "ORDER_IN_PROGRESS"
+                        ? ["Đang vận chuyển", "Hủy"]
+                        : row?.order?.status === "PREPARING_TO_SHIP"
+                        ? ["Đã giao", "Hủy"]
+                        : [],
+                    details: orderDetails?.map((o) => ({
+                      productName: o?.product?.name,
+                      image: o?.product?.avatar,
+                      price: o?.product?.price,
+                      amount: o?.orderDetail?.amount,
+                      discount: o?.product?.discount,
+                      total: o?.product?.price * o?.product?.amount,
+                    })),
+                  };
+                  return <Row key={row.name} row={x} />;
+                })}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <TablePagination
+          rowsPerPageOptions={[10, 25, 100]}
+          component="div"
+          count={result.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+      </Paper>
+    </div>
   );
 }

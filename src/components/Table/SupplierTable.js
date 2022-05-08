@@ -104,7 +104,6 @@ export default function SupplierTable() {
                   <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
                     <TableCell align="left">{row.supplierName}</TableCell>
                     <TableCell align="left">{row.phoneNumber}</TableCell>
-
                     <TableCell align="center">
                       {row.street +
                         " " +

@@ -3,10 +3,12 @@ import orderApi from "../api/orderApi";
 
 const initialState = {
   in_progress_order: [],
+  orders: [],
   delivered_order: [],
   prepare_to_ship_order: [],
   canceled_order: [],
   orderDetails: [],
+  status: "",
   errorMessage: "",
 };
 export const getByStatus = createAsyncThunk(
@@ -39,6 +41,32 @@ export const updateStatus = createAsyncThunk(
     try {
       const res = await orderApi.updateStatus(params);
 
+      return res;
+    } catch (error) {
+      return rejectWithValue(error.response.statusText);
+    }
+  }
+);
+export const searchOrder = createAsyncThunk(
+  "searchOrder",
+  async (params, { rejectWithValue }) => {
+    try {
+      console.log(params);
+      const res = await orderApi.searchOrder(params);
+      console.log(res);
+
+      return res;
+    } catch (error) {
+      return rejectWithValue(error.response.statusText);
+    }
+  }
+);
+export const getAllOrder = createAsyncThunk(
+  "getAllOrder",
+  async (params, { rejectWithValue }) => {
+    try {
+      const res = await orderApi.getAll(params);
+      console.log(res);
 
       return res;
     } catch (error) {
@@ -50,17 +78,23 @@ export const updateStatus = createAsyncThunk(
 const orderSlice = createSlice({
   name: "orders",
   initialState,
+  reducers: {
+    setStatusOrder: (state, action) => {
+      state.status = action.payload;
+    },
+  },
   extraReducers: {
     [getByStatus.pending]: (state, action) => {},
     [getByStatus.fulfilled]: (state, action) => {
+      const ods = action.payload;
       if (action.payload[0]?.order.status === "ORDER_IN_PROGRESS") {
-        state.in_progress_order = action.payload;
+        state.in_progress_order = ods.reverse();
       } else if (action.payload[0]?.order.status === "PREPARING_TO_SHIP") {
-        state.prepare_to_ship_order = action.payload;
+        state.prepare_to_ship_order = ods.reverse();
       } else if (action.payload[0]?.order.status === "DELIVERED") {
-        state.delivered_order = action.payload;
+        state.delivered_order = ods.reverse();
       } else if (action.payload[0]?.order.status === "CANCELED") {
-        state.canceled_order = action.payload;
+        state.canceled_order = ods.reverse();
       }
     },
     [getByStatus.rejected]: (state, action) => {
@@ -72,6 +106,30 @@ const orderSlice = createSlice({
       state.orderDetails = action.payload;
     },
     [getOrderDetailByOrderId.rejected]: (state, action) => {
+      state.errorMessage = action.payload;
+    },
+
+    [getAllOrder.pending]: (state, action) => {},
+    [getAllOrder.fulfilled]: (state, action) => {
+      state.orders = action.payload;
+    },
+    [getAllOrder.rejected]: (state, action) => {
+      state.errorMessage = action.payload;
+    },
+    [searchOrder.pending]: (state, action) => {},
+    [searchOrder.fulfilled]: (state, action) => {
+      const ods = action.payload;
+      if (action.payload[0]?.order.status === "ORDER_IN_PROGRESS") {
+        state.in_progress_order = ods.reverse();
+      } else if (action.payload[0]?.order.status === "PREPARING_TO_SHIP") {
+        state.prepare_to_ship_order = ods.reverse();
+      } else if (action.payload[0]?.order.status === "DELIVERED") {
+        state.delivered_order = ods.reverse();
+      } else if (action.payload[0]?.order.status === "CANCELED") {
+        state.canceled_order = ods.reverse();
+      }
+    },
+    [searchOrder.rejected]: (state, action) => {
       state.errorMessage = action.payload;
     },
     [updateStatus.pending]: (state, action) => {},
@@ -90,7 +148,6 @@ const orderSlice = createSlice({
         );
         state.prepare_to_ship_order = prepare_to_ship_;
       } else if (action.payload.order.status === "CANCELED") {
-
         state.canceled_order.push(action.payload);
         const in_progress = state.in_progress_order.filter(
           (x) => x.order.id !== action.payload.order.id
@@ -110,4 +167,6 @@ const orderSlice = createSlice({
   },
 });
 const { reducer, actions } = orderSlice;
+export const { setStatusOrder } = orderSlice.actions;
+
 export default reducer;

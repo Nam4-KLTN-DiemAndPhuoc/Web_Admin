@@ -25,7 +25,7 @@ import Content from "../../components/Content";
 import UserTable from "../../components/Table/UserTable";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import { logout } from "../../redux/authSlice";
-import { getByStatus } from "../../redux/orderSlice";
+import { getAllOrder, getByStatus, setStatusOrder } from "../../redux/orderSlice";
 import EventNoteIcon from "@mui/icons-material/EventNote";
 import FactoryIcon from "@mui/icons-material/Factory";
 import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket';
@@ -54,6 +54,7 @@ function Dashboard(props) {
     dispatch(getByStatus("PREPARING_TO_SHIP"));
     dispatch(getByStatus("DELIVERED"));
     dispatch(getByStatus("CANCELED"));
+    dispatch(setStatusOrder("ORDER_IN_PROGRESS"))
 
     dispatch(getAllCategory());
     dispatch(getAllSupplier());
