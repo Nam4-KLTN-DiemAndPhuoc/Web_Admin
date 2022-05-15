@@ -43,7 +43,6 @@ export default function SearchVoucher() {
   };
   return (
     <div>
-      <AddSupplierModal check={isOpenVoucher} />
       <Stack direction="row" spacing={2}>
         <Button
           style={{
