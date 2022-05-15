@@ -62,7 +62,8 @@ const voucherSlice = createSlice({
     [getAllVoucher.pending]: (state, action) => {
     },
     [getAllVoucher.fulfilled]: (state, action) => {
-      state.vouchers = action.payload
+      const s=action.payload
+      state.vouchers=s.reverse()
     },
     [getAllVoucher.rejected]: (state, action) => {
       state.errorMessage = action.payload;
