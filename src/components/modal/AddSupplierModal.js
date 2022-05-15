@@ -9,7 +9,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { openCategoryModal, openSupplierModal } from "../../redux/modalSlice";
 import Select from "react-select";
@@ -18,6 +18,7 @@ import { addSupplier } from "../../redux/productSlice";
 import { openDialog } from "../../redux/dialogSlice";
 import MyDialog from "../alert/MyDialog";
 import MyAlert from "../alert/MyAlert";
+import { phoneValidator, validPhone } from "../regex/regex";
 
 function AddSupplierModal({ check }) {
   const [open, setOpen] = React.useState(check);
@@ -79,6 +80,31 @@ function AddSupplierModal({ check }) {
   const [street, setStreet] = useState("");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+  
+  useEffect(() => {
+
+    if(name=="" || phone=="" || street=="" || selectedWard.label=="" || selectedDistrict.label=="" || selectedCity.label=="" ){
+
+      setSeverity("error")
+      setMessage("Vui lòng nhập hết các trường bên dưới")
+    }else if( phone !==""){
+      if(phoneValidator(phone) != ""){
+        setSeverity("error")
+        setMessage("Số điện thoại không hợp lệ")
+      }else{
+        setSeverity("")
+        setMessage("")
+      }
+    }
+    else{
+      setSeverity("")
+      setMessage("")
+    }
+  }, [
+
+    dispatch,name,phone,street, selectedWard,selectedDistrict,selectedCity ,messaage, severity
+  ]);
+
   return (
     <React.Fragment>
      
@@ -101,7 +127,8 @@ function AddSupplierModal({ check }) {
               <TextField
                 id="filled-basic"
                 label="Tên nhà cung cấp"
-                variant="filled"
+                variant="standard"
+                value={name}
                 style={{ width: "100%", marginTop: "5px" }}
                 onChange={(e) => setName(e.target.value)}
               />
@@ -110,6 +137,7 @@ function AddSupplierModal({ check }) {
                 id="filled-basic"
                 label="Số điện thoại"
                 variant="filled"
+                value={phone}
                 style={{
                   width: "100%",
                   marginTop: "5px",
@@ -161,6 +189,7 @@ function AddSupplierModal({ check }) {
                 id="filled-basic"
                 label="Tên đường, số nhà"
                 variant="filled"
+                value={street}
                 style={{ width: "100%", marginTop: "10px" }}
                 onChange={(e) => setStreet(e.target.value)}
               />

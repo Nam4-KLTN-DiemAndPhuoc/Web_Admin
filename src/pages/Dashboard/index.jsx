@@ -29,17 +29,22 @@ import { getAllOrder, getByStatus, setStatusOrder } from "../../redux/orderSlice
 import EventNoteIcon from "@mui/icons-material/EventNote";
 import FactoryIcon from "@mui/icons-material/Factory";
 import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket';
-
+import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 import {
   getAllCategory,
   getAllProduct,
   getAllSupplier,
   getAttribute,
 } from "../../redux/productSlice";
+import {
+  getAllVoucher,
+
+} from "../../redux/voucherSlice";
 import ProductTable from "../../components/Table/ProductTable";
 import ContentProduct from "../../components/ContentProduct";
 import SupplierTable from "../../components/Table/SupplierTable";
 import { getSuppliers } from "../../redux/supplierSlice";
+import VoucherTable from "../../components/Table/VoucherTable";
 const drawerWidth = 240;
 
 function Dashboard(props) {
@@ -80,6 +85,9 @@ function Dashboard(props) {
     } else if (text === "Nhà cung cấp") {
       dispatch(getAllSupplier());
       setCheck("Nhà cung cấp");
+    }else if (text === "Voucher") {
+      dispatch(getAllVoucher());
+      setCheck("Voucher");
     }
   };
 
@@ -133,6 +141,17 @@ function Dashboard(props) {
             <FactoryIcon />
           </ListItemIcon>
           <ListItemText primary={"Nhà cung cấp"} />
+        </ListItem>
+        <Divider />
+        <ListItem
+          button
+          key={"Voucher"}
+          onClick={() => handleClick("Voucher")}
+        >
+          <ListItemIcon>
+            <LocalOfferIcon />
+          </ListItemIcon>
+          <ListItemText primary={"Voucher"} />
         </ListItem>
         <Divider />
         <Divider style={{ marginTop: "400px" }} />
@@ -235,7 +254,7 @@ function Dashboard(props) {
         ) : check == "Nhà cung cấp" ? (
           <SupplierTable />
         ) : (
-          <div>ss</div>
+          <VoucherTable />
         )}
 
         <Typography paragraph></Typography>

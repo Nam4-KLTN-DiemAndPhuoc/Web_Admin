@@ -12,7 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { searchOrder } from "../redux/orderSlice";
 
 export default function () {
-  var options = ["online", "offline"];
+  var options = ["Trực tuyến", "Tiền mặt"];
   const { status } = useSelector((s) => s.orders);
   const [paymentMethod, setPaymentMethod] = useState("");
   const [key, setKey] = useState("");
@@ -26,9 +26,7 @@ export default function () {
       dispatch(
         searchOrder({
           paymentMethod:
-            paymentMethod === "online" || paymentMethod === "offline"
-              ? paymentMethod
-              : "",
+            paymentMethod === "Trực tuyến"?"online":(paymentMethod === "Tiền mặt"?"offline":""),
           status: status,
           codeOrder: e.target.value,
         })
@@ -41,10 +39,10 @@ export default function () {
   };
 
   useEffect(() => {
-    if (paymentMethod === "online" || paymentMethod === "offline") {
+    if (paymentMethod === "Trực tuyến" || paymentMethod === "Tiền mặt") {
       dispatch(
         searchOrder({
-          paymentMethod: paymentMethod,
+          paymentMethod: paymentMethod==="Trực tuyến"?"online":"offline",
           status: status,
           codeOrder: key,
         })

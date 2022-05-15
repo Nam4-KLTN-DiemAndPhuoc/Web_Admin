@@ -184,7 +184,7 @@ Row.propTypes = {
     details: PropTypes.arrayOf(
       PropTypes.shape({
         productName: PropTypes.string.isRequired,
-        image: PropTypes.string.isRequired,
+        image: PropTypes.string,
         price: PropTypes.number.isRequired,
 
         amount: PropTypes.number.isRequired,
@@ -273,7 +273,7 @@ export default function OrderTable({ data }) {
 
                     discount: row?.order?.discount,
                     totalPrice: row?.order?.totalPrice,
-                    paymentMethod: row?.order?.paymentMethod,
+                    paymentMethod: row?.order?.paymentMethod==="offline"?"Tiền mặt":"Trực tuyến",
                     status:
                       row?.order?.status === "ORDER_IN_PROGRESS"
                         ? "Đơn hàng chưa xác nhận"

@@ -5,6 +5,10 @@ const productApi = {
     const url = `product-service/product/order/desc?page=${page}&limit=5`;
     return axiosClient.get(url);
   },
+  getProductsDelete: (page) => {
+    const url = `product-service/admin/product-delete?page=${page}&limit=5`;
+    return axiosClient.get(url);
+  },
   getProductById: (id) => {
     const url = `product-service/admin/${id}`;
     return axiosClient.get(url);
@@ -35,6 +39,7 @@ const productApi = {
     const url = `category-service/category`;
     return axiosClient.get(url);
   },
+
   getAllSupplier: () => {
     const url = `supplier-service/supplier`;
     return axiosClient.get(url);
@@ -75,28 +80,58 @@ const productApi = {
     const url = `product-service/product/category/${params.idCategory}/supplier/${params.idSupplier}?page=${params.page}&limit=5`;
     return axiosClient.get(url);
   },
+  findByCategoryAndSupplierDeleted: (params) => {
+    const url = `product-service/product/category-deleted/${params.idCategory}/supplier-deleted/${params.idSupplier}?page=${params.page}&limit=5`;
+    return axiosClient.get(url);
+  },
   findByCategoryAndSupplierAndName: (params) => {
+    
     const url = `product-service/product/category/${params.idCategory}/supplier/${params.idSupplier}/name?name=${params.name}&page=${params.page}&limit=5`;
+    return axiosClient.get(url);
+  },
+  findByCategoryAndSupplierAndNameDeleted: (params) => {
+    
+    const url = `product-service/product/deleted-category/${params.idCategory}/deleted-supplier/${params.idSupplier}/name?name=${params.name}&page=${params.page}&limit=5`;
     return axiosClient.get(url);
   },
   findByCategoryAndName: (params) => {
     const url = `product-service/product/category/${params.idCategory}/${params.name}?page=${params.page}&limit=5`;
     return axiosClient.get(url);
   },
+  findByCategoryAndNameDeleted: (params) => {
+    const url = `product-service/product/deleted-category/${params.idCategory}/${params.name}?page=${params.page}&limit=5`;
+    return axiosClient.get(url);
+  },
   findBySupplierAndName: (params) => {
     const url = `product-service/product/supplier/${params.idSupplier}/${params.name}?page=${params.page}&limit=5`;
+    return axiosClient.get(url);
+  },
+  findBySupplierAndNameDeleted: (params) => {
+    const url = `product-service/product/deleted-supplier/${params.idSupplier}/${params.name}?page=${params.page}&limit=5`;
     return axiosClient.get(url);
   },
   findByCategory: (params) => {
     const url = `product-service/product/category/${params.idCategory}?page=${params.page}&limit=5`;
     return axiosClient.get(url);
   },
+  findByCategoryDeleted: (params) => {
+    const url = `product-service/product/category-deleted/${params.idCategory}?page=${params.page}&limit=5`;
+    return axiosClient.get(url);
+  },
   findBySupplier: (params) => {
     const url = `product-service/product/supplier/${params.idSupplier}?page=${params.page}&limit=5`;
     return axiosClient.get(url);
   },
+  findBySupplierDeleted: (params) => {
+    const url = `product-service/product/supplier-deleted/${params.idSupplier}?page=${params.page}&limit=5`;
+    return axiosClient.get(url);
+  },
   findByName: (params) => {
     const url = `product-service/product/search/?name=${params.name}&page=${params.page}&limit=5`;
+    return axiosClient.get(url);
+  },
+  findByNameDeleted: (params) => {
+    const url = `product-service/product/search-deleted/?name=${params.name}&page=${params.page}&limit=5`;
     return axiosClient.get(url);
   },
   updateProduct: (params) => {

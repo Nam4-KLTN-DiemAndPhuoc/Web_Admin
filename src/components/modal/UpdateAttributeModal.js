@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { openDialog } from "../../redux/dialogSlice";
 import { openUpdateAtrributeModal } from "../../redux/modalSlice";
 import { updateAttribute } from "../../redux/productSlice";
+import MyAlert from "../alert/MyAlert";
 import MyDialog from "../alert/MyDialog";
 
 export default function UpdateAttributeModal({ check }) {
@@ -29,7 +30,8 @@ export default function UpdateAttributeModal({ check }) {
   const [xl, setXL] = React.useState(-1);
   const { product, isAddAttributed,attributes } = useSelector((state) => state.products);
   const { isOpen } = useSelector((s) => s.dialog);
-
+  const [severity, setSeverity] = React.useState("");
+  const [message, setMessage] = React.useState("");
   const handleClose = () => {
     dispatch(openUpdateAtrributeModal());
   };
@@ -51,6 +53,19 @@ export default function UpdateAttributeModal({ check }) {
     setXL(-1)
     handleClose();
   };
+  React.useEffect(() => {
+ if( (s!= -1 && s<0)|| (m!= -1 && m<0)||(l!= -1 && l<0)||(xl!= -1 && xl<0)){
+      setSeverity("error")
+      setMessage("Vui lòng nhập số lớn hơn 0")
+    }
+    else{
+      setSeverity("")
+      setMessage("")
+    }
+  }, [
+
+    dispatch,s,m,l, xl, message, severity
+  ]);
 
   return (
     <React.Fragment>
@@ -70,6 +85,10 @@ export default function UpdateAttributeModal({ check }) {
         <Box sx={{ ...style, width: 600 }}>
           <h2 id="parent-modal-title">Cập nhật thuộc tính</h2>
           <Box sx={{ width: "100% " }}>
+    
+            {message && severity && (
+              <MyAlert severity={severity} message={message} />
+            )}
             <FormControl fullWidth>
               <TextField
                 id="filled-basic"

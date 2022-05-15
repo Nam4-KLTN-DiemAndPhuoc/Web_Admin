@@ -8,6 +8,7 @@ import supplierSlice from "./supplierSlice";
 import { combineReducers } from "redux";
 import modalSlice from "./modalSlice";
 import dialogSlice from "./dialogSlice";
+import voucherSlice from "./voucherSlice";
 
 const rootReducer = combineReducers({
   auth: authSlice,
@@ -17,6 +18,7 @@ const rootReducer = combineReducers({
   suppliers: supplierSlice,
   modal: modalSlice,
   dialog: dialogSlice,
+  vouchers: voucherSlice,
 });
 
 const store = configureStore({ reducer: rootReducer });

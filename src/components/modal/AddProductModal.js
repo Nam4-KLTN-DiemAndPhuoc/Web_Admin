@@ -1,9 +1,11 @@
 import styled from "@emotion/styled";
 import AddCircleOutlinedIcon from "@mui/icons-material/AddCircleOutlined";
 import {
-  Autocomplete, FormControl, Stack,
+  Autocomplete,
+  FormControl,
+  Stack,
   TextField,
-  Tooltip
+  Tooltip,
 } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -11,25 +13,22 @@ import Modal from "@mui/material/Modal";
 import { post } from "axios";
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  openDialog,
-  
-} from "../../redux/dialogSlice";
+import { openDialog } from "../../redux/dialogSlice";
 import {
   openCategoryModal,
   openModal,
-  openSupplierModal
+  openSupplierModal,
 } from "../../redux/modalSlice";
 import {
   addAttribute,
   addListImage,
-  addProduct,unAddAttributed
+  addProduct,
+  unAddAttributed,
 } from "../../redux/productSlice";
 import MyAlert from "../alert/MyAlert";
 import MyDialog from "../alert/MyDialog";
 import AddCategoryModal from "./AddCategoryModal";
 import AddSupplierModal from "./AddSupplierModal";
-
 
 const Input = styled("input")({
   display: "none",
@@ -57,8 +56,12 @@ function ChildModal({ params }) {
   const [xl, setXL] = React.useState(0);
   const { product } = useSelector((state) => state.products);
   const { isOpen } = useSelector((s) => s.dialog);
-
+  const [severity, setSeverity] = React.useState("");
+  const [message, setMessage] = React.useState("");
   const handleOpen = async () => {
+    if (params?.price >0){
+      
+ 
     setOpen(true);
 
     if (params?.images.length > 0) {
@@ -73,6 +76,7 @@ function ChildModal({ params }) {
             "content-type": "multipart/form-data",
           },
         };
+
         const res = await post(url, fd, config);
         files.push(res);
       }
@@ -86,6 +90,7 @@ function ChildModal({ params }) {
         supplierId: params.supplierId,
       };
       const p = await dispatch(addProduct(data));
+
       for (let j = 0; j < files.length; j++) {
         let x = {
           url: files[j].data,
@@ -104,6 +109,7 @@ function ChildModal({ params }) {
       };
       dispatch(addProduct(data));
     }
+  }
   };
   const handleClose = () => {
     setOpen(false);
@@ -121,11 +127,24 @@ function ChildModal({ params }) {
 
       dispatch(addAttribute(params));
       dispatch(openDialog());
-      dispatch(openModal())
     }
     handleClose();
   };
   const { isAddAttributed } = useSelector((s) => s.products);
+  React.useEffect(() => {
+ if( (s!= -1 && s<0)|| (m!= -1 && m<0)||(l!= -1 && l<0)||(xl!= -1 && xl<0)){
+      setSeverity("error")
+      setMessage("Vui lòng nhập số lớn hơn 0")
+    }
+    else{
+      setSeverity("")
+      setMessage("")
+    }
+  }, [
+
+    dispatch,s,m,l, xl, message, severity
+  ]);
+
 
   return (
     <React.Fragment>
@@ -134,7 +153,7 @@ function ChildModal({ params }) {
         title="Thông báo"
         content="Thêm thuộc tính sản phẩm thành công !"
       />
-      {isAddAttributed == false &&  (
+      {isAddAttributed == false && (
         <Button variant="contained" onClick={handleOpen}>
           Thêm thuộc tính
         </Button>
@@ -151,10 +170,13 @@ function ChildModal({ params }) {
           <h2 id="parent-modal-title">Thêm thuộc tính</h2>
           <Box sx={{ width: "100% " }}>
             <FormControl fullWidth>
+            {message && severity && (
+              <MyAlert severity={severity} message={message} />
+            )}
               <TextField
                 id="filled-basic"
                 label=" Size S - Số lượng"
-                inputProps={{ type: 'number'}}
+                inputProps={{ type: "number" }}
                 variant="filled"
                 style={{ width: "100%", marginTop: "5px" }}
                 onChange={(e) => setS(e.target.value)}
@@ -162,7 +184,7 @@ function ChildModal({ params }) {
               <TextField
                 id="filled-basic"
                 label=" Size M - Số lượng"
-                inputProps={{ type: 'number'}}
+                inputProps={{ type: "number" }}
                 variant="filled"
                 style={{ width: "100%", marginTop: "5px" }}
                 onChange={(e) => setM(e.target.value)}
@@ -170,7 +192,7 @@ function ChildModal({ params }) {
               <TextField
                 id="filled-basic"
                 label=" Size L - Số lượng"
-                inputProps={{ type: 'number'}}
+                inputProps={{ type: "number" }}
                 variant="filled"
                 style={{ width: "100%", marginTop: "5px" }}
                 onChange={(e) => setL(e.target.value)}
@@ -178,7 +200,7 @@ function ChildModal({ params }) {
               <TextField
                 id="filled-basic"
                 label=" Size XL - Số lượng"
-                inputProps={{ type: 'number'}}
+                inputProps={{ type: "number" }}
                 variant="filled"
                 style={{ width: "100%", marginTop: "5px" }}
                 onChange={(e) => setXL(e.target.value)}
@@ -222,8 +244,8 @@ export default function AddProductModal({ check }) {
   const [categoryId, setCategoryId] = React.useState();
   const [fileArray, setFileArray] = React.useState([]);
   const [previewImages, setPreviewImages] = React.useState([]);
-  const [severity, setSeverity]= React.useState("")
-  const [message, setMessage]= React.useState("")
+  const [severity, setSeverity] = React.useState("");
+  const [message, setMessage] = React.useState("");
 
   const handleClose = () => {
     dispatch(unAddAttributed());
@@ -272,7 +294,23 @@ export default function AddProductModal({ check }) {
   const handleAddSupplier = () => {
     dispatch(openSupplierModal());
   };
+  React.useEffect(() => {
+    if( price <=0 || categoryId ===null || supplierId === null || name==="" ){
+      setSeverity("error")
+      setMessage("Vui lòng nhập các trường bên dưới để tiếp tục")
+    } 
+      if( price <=0 ){
+      setSeverity("error")
+      setMessage("Vui lòng nhập giá lớn hơn 0")
+    }
+    else{
+      setSeverity("")
+      setMessage("")
+    }
+  }, [
 
+    dispatch, message, severity,price,name,supplierId,categoryId
+  ]);
   return (
     <div>
       <MyDialog
@@ -288,10 +326,9 @@ export default function AddProductModal({ check }) {
         <Box sx={{ ...style, width: 800 }}>
           <h2 id="parent-modal-title">Thêm sản phẩm</h2>
           <div>
-          { message && severity && (
-<MyAlert severity={severity} message={message} />
-
-  )}
+            {message && severity && (
+              <MyAlert severity={severity} message={message} />
+            )}
             <Autocomplete
               style={{ float: "left" }}
               disablePortal
@@ -301,13 +338,10 @@ export default function AddProductModal({ check }) {
               renderInput={(params) => (
                 <>
                   <TextField {...params} label="Danh mục" />
-                  {
-                    setCategoryId(
-                      categories?.find(
-                        (c) => c.name === params.inputProps.value
-                      )?.id
-                    )
-                  }
+                  {setCategoryId(
+                    categories?.find((c) => c.name === params.inputProps.value)
+                      ?.id
+                  )}
                 </>
               )}
             />
@@ -364,6 +398,7 @@ export default function AddProductModal({ check }) {
             <TextField
               id="filled-basic"
               label="Giá"
+              inputProps={{ type: 'number'}}
               variant="filled"
               style={{ width: "100%", marginBottom: "5px" }}
               onChange={(e) => setPrice(e.target.value)}
@@ -400,22 +435,23 @@ export default function AddProductModal({ check }) {
 
           {/* <div style={{ float: "right" }}> */}
           <Stack direction="row" spacing={2} style={{ float: "right" }}>
-            {supplierId != null && categoryId!=null && name != "" && price >0 &&
-              <ChildModal
-              params={{
-                name: name,
-                price: price,
-                avatar: image,
-                images: fileArray,
-                description: description,
-                supplierId: supplierId,
-                categoryId: categoryId,
-              }}
-            />
-          
+            {supplierId != null &&
+              categoryId != null &&
+              name != "" &&
+              price > 0 && (
+                <ChildModal
+                  params={{
+                    name: name,
+                    price: price,
+                    avatar: image,
+                    images: fileArray,
+                    description: description,
+                    supplierId: supplierId,
+                    categoryId: categoryId,
+                  }}
+                />
+              )}
 
-            }
-            
             {isAddAttributed == true && (
               <Button variant="contained" color="success" onClick={handleSave}>
                 Lưu

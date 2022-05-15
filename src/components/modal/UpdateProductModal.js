@@ -13,6 +13,7 @@ import {
   deleteS3,
   updateProduct,
 } from "../../redux/productSlice";
+import MyAlert from "../alert/MyAlert";
 import MyDialog from "../alert/MyDialog";
 
 const style = {
@@ -33,10 +34,14 @@ export default function UpdateProductModal({ check }) {
   const dispatch = useDispatch();
   const { products, images, categories, suppliers, isAddAttributed, product } =
     useSelector((state) => state.products);
-  const [name, setName] = React.useState("");
-  const [description, setDescription] = React.useState("");
-  const [price, setPrice] = React.useState(0);
-  const [discount, setDiscount] = React.useState(0);
+    // setName(product?.product?.name);
+    // setPrice(product?.product?.price);
+    // setDescription(product?.product?.description);
+    // setDiscount(product?.product?.discount);
+  const [name, setName] = React.useState(product?.product?.name);
+  const [description, setDescription] = React.useState(product?.product?.description);
+  const [price, setPrice] = React.useState(product?.product?.price);
+  const [discount, setDiscount] = React.useState(product?.product?.discount);
   const { user } = useSelector((s) => s.auth);
   const [fileArray, setFileArray] = React.useState([]);
   const [previewImages, setPreviewImages] = React.useState([]);
@@ -121,12 +126,31 @@ export default function UpdateProductModal({ check }) {
       setFileArray(e.target.files);
     }
   };
+  const [severity, setSeverity] = React.useState("");
+  const [message, setMessage] = React.useState("");
   React.useEffect(() => {
-    setName(product?.product?.name);
-    setPrice(product?.product?.price);
-    setDescription(product?.product?.description);
-    setDiscount(product?.product?.discount);
-  }, [product]);
+
+      if( price <=0 || name===""|| discount==="" ){
+        setSeverity("error")
+        setMessage("Vui lòng nhập các trường bên dưới để tiếp tục")
+      } 
+        if( price <=0 ){
+        setSeverity("error")
+        setMessage("Vui lòng nhập giá lớn hơn 0")
+      }
+      else if( discount <0 ){
+        setSeverity("error")
+        setMessage("Vui lòng nhập giảm giá >=0")
+      }
+      else{
+        setSeverity("")
+        setMessage("")
+      }
+    }, [
+  
+      dispatch,product, message, severity,price,name,discount
+    ]);
+
   return (
     <div>
       <MyDialog
@@ -142,6 +166,8 @@ export default function UpdateProductModal({ check }) {
         <Box sx={{ ...style, width: 800 }}>
           <h2 id="parent-modal-title">Cập nhật sản phẩm</h2>
           <div>
+          {severity !="" && message !="" && (<MyAlert severity={severity} message={message} />)}
+
             <Stack direction="row">
               <Typography
                 variant="h7"

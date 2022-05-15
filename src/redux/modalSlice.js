@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   isOpen: false,
   isOpenSupplier: false,
+  isOpenVoucher: false,
   isOpenCategory: false,
   isOpenUpdateProductModal: false,
   isOpenUpdateSupplierModal: false,
@@ -29,6 +30,10 @@ const modalSlice = createSlice({
       state.isOpenUpdateAttributeModal = !state.isOpenUpdateAttributeModal;
       
     },
+    openAddVoucherModal: (state, action) => {
+      state.isOpenVoucher = !state.isOpenVoucher;
+      
+    },
     openUpdateSupplierModal: (state, action) => {
       state.isOpenUpdateSupplierModal = !state.isOpenUpdateSupplierModal;
       
@@ -39,7 +44,7 @@ const modalSlice = createSlice({
 export const {
   openModal,
   openCategoryModal,
-  openSupplierModal,
-  openUpdateProductModal,openUpdateAtrributeModal,openUpdateSupplierModal
+  openSupplierModal,openAddVoucherModal,
+  openUpdateProductModal,openUpdateAtrributeModal,openUpdateSupplierModal,
 } = modalSlice.actions;
 export default modalSlice.reducer;

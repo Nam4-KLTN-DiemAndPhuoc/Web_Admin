@@ -38,6 +38,7 @@ import {
   findBySupplier,
   findBySupplierAndName,
   getAllProduct,
+  
   getAttribute,
   getImagesByProductId,
   getProductById,
@@ -57,7 +58,7 @@ function Row(props) {
   };
   const [status, setStatus] = React.useState("");
   const { isOpenUpdateProductModal, isOpenUpdateAttributeModal } = useSelector((s) => s.modal);
-  const { product } = useSelector((s) => s.products);
+  const { product ,products,page, isDeleted} = useSelector((s) => s.products);
 
   const handleChange = (event) => {
     event.preventDefault();
@@ -74,7 +75,17 @@ function Row(props) {
       id: id, 
       userId: user.id,
     };
-    if (window.confirm("Bạn có chắc chắn muốn xóa sản phẩm "+data.id+" không? ")) {
+    if (window.confirm("Bạn có muốn xóa sản phẩm "+data.id+" không? ")) {
+      dispatch(deleteProduct(data));
+
+    }
+  };
+  const handleUnDelete = (id) => {
+    const data = {
+      id: id, 
+      userId: user.id,
+    };
+    if (window.confirm("Bạn có muốn bán lại sản phẩm "+data.id+" không? ")) {
       dispatch(deleteProduct(data));
 
     }
@@ -86,6 +97,8 @@ const updateAtrribute=(data)=>{
 dispatch(openUpdateAtrributeModal())
 
 }
+React.useEffect(() => {
+}, [dispatch,products,page, subPage, addPage]);
   return (
     <React.Fragment>
       <UpdateProductModal check={isOpenUpdateProductModal} />
@@ -112,15 +125,18 @@ dispatch(openUpdateAtrributeModal())
         <TableCell align="right">{row.category}</TableCell>
         <TableCell align="right">{row.supplier}</TableCell>
 
-        <TableCell>
-          <Stack spacing={2} direction="row">
+        <TableCell align="center">
+          {isDeleted ==true? (<Button variant="contained" onClick={(id) => handleUnDelete(row.id)}>
+              Bán lại
+            </Button>):( <Stack spacing={2} direction="row">
             <Button variant="contained" onClick={(id) => handleUpdate(row)}>
               Cập nhật
             </Button>
             <Button variant="outlined" onClick={(id) => handleDelete(row.id)}>
               Xóa
             </Button>
-          </Stack>
+          </Stack>)}
+         
         </TableCell>
       </TableRow>
       <TableRow>
@@ -192,7 +208,7 @@ Row.propTypes = {
   row: PropTypes.shape({
     id: PropTypes.number.isRequired,
     productName: PropTypes.string.isRequired,
-    image: PropTypes.string.isRequired,
+    image: PropTypes.string,
     category: PropTypes.string.isRequired,
     supplier: PropTypes.string.isRequired,
 
@@ -230,251 +246,251 @@ export default function ProductTable() {
 
     searchByName,
   } = useSelector((state) => state.products);
-  React.useEffect(() => {
-    if (
-      searchByCastegory !== undefined &&
-      searchBySupplier !== undefined &&
-      searchByName !== ""
-    ) {
-      dispatch(
-        findByCategoryAndSupplierAndName({
-          idCategory: searchByCastegory,
-          idSupplier: searchBySupplier,
-          name: searchByName,
-          page: page,
-        })
-      );
-    } else if (
-      searchByCastegory !== undefined &&
-      searchBySupplier !== undefined
-    ) {
-      dispatch(
-        findByCategoryAndSupplier({
-          idCategory: searchByCastegory,
-          idSupplier: searchBySupplier,
-          page: page,
-        })
-      );
-    } else if (searchByCastegory !== undefined && searchByName !== "") {
-      dispatch(
-        findByCategoryAndName({
-          idCategory: searchByCastegory,
-          name: searchByName,
-          page: page,
-        })
-      );
-    } else if (searchBySupplier !== undefined && searchByName !== "") {
-      dispatch(
-        findBySupplierAndName({
-          idSupplier: searchBySupplier,
-          name: searchByName,
-          page: page,
-        })
-      );
-    } else if (
-      searchBySupplier !== undefined &&
-      searchByCastegory !== undefined
-    ) {
-      dispatch(
-        findByCategoryAndSupplier({
-          idSupplier: searchBySupplier,
-          idCategory: searchByCastegory,
-          page: page,
-        })
-      );
-    } else if (searchBySupplier !== undefined) {
-      dispatch(
-        findBySupplier({
-          idSupplier: searchBySupplier,
+  // React.useEffect(() => {
+  //   if (
+  //     searchByCastegory !== undefined &&
+  //     searchBySupplier !== undefined &&
+  //     searchByName !== ""
+  //   ) {
+  //     dispatch(
+  //       findByCategoryAndSupplierAndName({
+  //         idCategory: searchByCastegory,
+  //         idSupplier: searchBySupplier,
+  //         name: searchByName,
+  //         page: page,
+  //       })
+  //     );
+  //   } else if (
+  //     searchByCastegory !== undefined &&
+  //     searchBySupplier !== undefined
+  //   ) {
+  //     dispatch(
+  //       findByCategoryAndSupplier({
+  //         idCategory: searchByCastegory,
+  //         idSupplier: searchBySupplier,
+  //         page: page,
+  //       })
+  //     );
+  //   } else if (searchByCastegory !== undefined && searchByName !== "") {
+  //     dispatch(
+  //       findByCategoryAndName({
+  //         idCategory: searchByCastegory,
+  //         name: searchByName,
+  //         page: page,
+  //       })
+  //     );
+  //   } else if (searchBySupplier !== undefined && searchByName !== "") {
+  //     dispatch(
+  //       findBySupplierAndName({
+  //         idSupplier: searchBySupplier,
+  //         name: searchByName,
+  //         page: page,
+  //       })
+  //     );
+  //   } else if (
+  //     searchBySupplier !== undefined &&
+  //     searchByCastegory !== undefined
+  //   ) {
+  //     dispatch(
+  //       findByCategoryAndSupplier({
+  //         idSupplier: searchBySupplier,
+  //         idCategory: searchByCastegory,
+  //         page: page,
+  //       })
+  //     );
+  //   } else if (searchBySupplier !== undefined) {
+  //     dispatch(
+  //       findBySupplier({
+  //         idSupplier: searchBySupplier,
 
-          page: page,
-        })
-      );
-    } else if (searchByCastegory !== undefined) {
-      dispatch(
-        findByCategory({
-          idCategory: searchByCastegory,
+  //         page: page,
+  //       })
+  //     );
+  //   } else if (searchByCastegory !== undefined) {
+  //     dispatch(
+  //       findByCategory({
+  //         idCategory: searchByCastegory,
 
-          page: page,
-        })
-      );
-    } else if (searchByName !== "") {
-      dispatch(
-        findByName({
-          name: searchByName,
+  //         page: page,
+  //       })
+  //     );
+  //   } else if (searchByName !== "") {
+  //     dispatch(
+  //       findByName({
+  //         name: searchByName,
 
-          page: page,
-        })
-      );
-    } else {
-      dispatch(getAllProduct(page));
-    }
-  }, [dispatch]);
+  //         page: page,
+  //       })
+  //     );
+  //   } else {
+  //     dispatch(getAllProduct(page));
+  //   }
+  // }, [dispatch]);
 
   const handleClickFirstPage = () => {
     if (page > 1) {
       dispatch(subPage());
-      if (
-        searchByCastegory !== null &&
-        searchBySupplier !== null &&
-        searchByName !== ""
-      ) {
-        dispatch(
-          findByCategoryAndSupplierAndName({
-            idCategory: searchByCastegory,
-            idSupplier: searchBySupplier,
-            name: searchByName,
-            page: page - 1,
-          })
-        );
-      } else if (
-        searchByCastegory !== undefined &&
-        searchBySupplier !== undefined
-      ) {
-        dispatch(
-          findByCategoryAndSupplier({
-            idCategory: searchByCastegory,
-            idSupplier: searchBySupplier,
-            page: page - 1,
-          })
-        );
-      } else if (searchByCastegory !== undefined && searchByName !== "") {
-        dispatch(
-          findByCategoryAndName({
-            idCategory: searchByCastegory,
-            name: searchByName,
-            page: page - 1,
-          })
-        );
-      } else if (searchBySupplier !== undefined && searchByName !== "") {
-        dispatch(
-          findBySupplierAndName({
-            idSupplier: searchBySupplier,
-            name: searchByName,
-            page: page - 1,
-          })
-        );
-      } else if (
-        searchBySupplier !== undefined &&
-        searchByCastegory !== undefined
-      ) {
-        dispatch(
-          findByCategoryAndSupplier({
-            idSupplier: searchBySupplier,
-            idCategory: searchByCastegory,
-            page: page - 1,
-          })
-        );
-      } else if (searchBySupplier !== undefined) {
-        dispatch(
-          findBySupplier({
-            idSupplier: searchBySupplier,
+      // if (
+      //   searchByCastegory !== null &&
+      //   searchBySupplier !== null &&
+      //   searchByName !== ""
+      // ) {
+      //   dispatch(
+      //     findByCategoryAndSupplierAndName({
+      //       idCategory: searchByCastegory,
+      //       idSupplier: searchBySupplier,
+      //       name: searchByName,
+      //       page: page - 1,
+      //     })
+      //   );
+      // } else if (
+      //   searchByCastegory !== undefined &&
+      //   searchBySupplier !== undefined
+      // ) {
+      //   dispatch(
+      //     findByCategoryAndSupplier({
+      //       idCategory: searchByCastegory,
+      //       idSupplier: searchBySupplier,
+      //       page: page - 1,
+      //     })
+      //   );
+      // } else if (searchByCastegory !== undefined && searchByName !== "") {
+      //   dispatch(
+      //     findByCategoryAndName({
+      //       idCategory: searchByCastegory,
+      //       name: searchByName,
+      //       page: page - 1,
+      //     })
+      //   );
+      // } else if (searchBySupplier !== undefined && searchByName !== "") {
+      //   dispatch(
+      //     findBySupplierAndName({
+      //       idSupplier: searchBySupplier,
+      //       name: searchByName,
+      //       page: page - 1,
+      //     })
+      //   );
+      // } else if (
+      //   searchBySupplier !== undefined &&
+      //   searchByCastegory !== undefined
+      // ) {
+      //   dispatch(
+      //     findByCategoryAndSupplier({
+      //       idSupplier: searchBySupplier,
+      //       idCategory: searchByCastegory,
+      //       page: page - 1,
+      //     })
+      //   );
+      // } else if (searchBySupplier !== undefined) {
+      //   dispatch(
+      //     findBySupplier({
+      //       idSupplier: searchBySupplier,
 
-            page: page - 1,
-          })
-        );
-      } else if (searchByCastegory !== undefined) {
-        dispatch(
-          findByCategory({
-            idCategory: searchByCastegory,
+      //       page: page - 1,
+      //     })
+      //   );
+      // } else if (searchByCastegory !== undefined) {
+      //   dispatch(
+      //     findByCategory({
+      //       idCategory: searchByCastegory,
 
-            page: page - 1,
-          })
-        );
-      } else if (searchByName !== "") {
-        dispatch(
-          findByName({
-            name: searchByName,
+      //       page: page - 1,
+      //     })
+      //   );
+      // } else if (searchByName !== "") {
+      //   dispatch(
+      //     findByName({
+      //       name: searchByName,
 
-            page: page - 1,
-          })
-        );
-      } else {
-        dispatch(getAllProduct(page - 1));
-      }
+      //       page: page - 1,
+      //     })
+      //   );
+      // } else {
+      //   dispatch(getAllProduct(page - 1));
+      // }
     }
   };
   const handleClickLastPage = async () => {
     if (products.length > 0) {
       dispatch(addPage());
-      if (
-        searchByCastegory !== undefined &&
-        searchBySupplier !== undefined &&
-        searchByName !== ""
-      ) {
-        dispatch(
-          findByCategoryAndSupplierAndName({
-            idCategory: searchByCastegory,
-            idSupplier: searchBySupplier,
-            name: searchByName,
-            page: page + 1,
-          })
-        );
-      } else if (
-        searchByCastegory !== undefined &&
-        searchBySupplier !== undefined
-      ) {
-        dispatch(
-          findByCategoryAndSupplier({
-            idCategory: searchByCastegory,
-            idSupplier: searchBySupplier,
-            page: page + 1,
-          })
-        );
-      } else if (searchByCastegory !== undefined && searchByName !== "") {
-        dispatch(
-          findByCategoryAndName({
-            idCategory: searchByCastegory,
-            name: searchByName,
-            page: page + 1,
-          })
-        );
-      } else if (searchBySupplier !== undefined && searchByName !== "") {
-        dispatch(
-          findBySupplierAndName({
-            idSupplier: searchBySupplier,
-            name: searchByName,
-            page: page + 1,
-          })
-        );
-      } else if (
-        searchBySupplier !== undefined &&
-        searchByCastegory !== undefined
-      ) {
-        dispatch(
-          findByCategoryAndSupplier({
-            idSupplier: searchBySupplier,
-            idCategory: searchByCastegory,
-            page: page + 1,
-          })
-        );
-      } else if (searchBySupplier !== undefined) {
-        dispatch(
-          findBySupplier({
-            idSupplier: searchBySupplier,
+      // if (
+      //   searchByCastegory !== undefined &&
+      //   searchBySupplier !== undefined &&
+      //   searchByName !== ""
+      // ) {
+      //   dispatch(
+      //     findByCategoryAndSupplierAndName({
+      //       idCategory: searchByCastegory,
+      //       idSupplier: searchBySupplier,
+      //       name: searchByName,
+      //       page: page + 1,
+      //     })
+      //   );
+      // } else if (
+      //   searchByCastegory !== undefined &&
+      //   searchBySupplier !== undefined
+      // ) {
+      //   dispatch(
+      //     findByCategoryAndSupplier({
+      //       idCategory: searchByCastegory,
+      //       idSupplier: searchBySupplier,
+      //       page: page + 1,
+      //     })
+      //   );
+      // } else if (searchByCastegory !== undefined && searchByName !== "") {
+      //   dispatch(
+      //     findByCategoryAndName({
+      //       idCategory: searchByCastegory,
+      //       name: searchByName,
+      //       page: page + 1,
+      //     })
+      //   );
+      // } else if (searchBySupplier !== undefined && searchByName !== "") {
+      //   dispatch(
+      //     findBySupplierAndName({
+      //       idSupplier: searchBySupplier,
+      //       name: searchByName,
+      //       page: page + 1,
+      //     })
+      //   );
+      // } else if (
+      //   searchBySupplier !== undefined &&
+      //   searchByCastegory !== undefined
+      // ) {
+      //   dispatch(
+      //     findByCategoryAndSupplier({
+      //       idSupplier: searchBySupplier,
+      //       idCategory: searchByCastegory,
+      //       page: page + 1,
+      //     })
+      //   );
+      // } else if (searchBySupplier !== undefined) {
+      //   dispatch(
+      //     findBySupplier({
+      //       idSupplier: searchBySupplier,
 
-            page: page + 1,
-          })
-        );
-      } else if (searchByCastegory !== undefined) {
-        dispatch(
-          findByCategory({
-            idCategory: searchByCastegory,
+      //       page: page + 1,
+      //     })
+      //   );
+      // } else if (searchByCastegory !== undefined) {
+      //   dispatch(
+      //     findByCategory({
+      //       idCategory: searchByCastegory,
 
-            page: page + 1,
-          })
-        );
-      } else if (searchByName !== "") {
-        dispatch(
-          findByName({
-            name: searchByName,
+      //       page: page + 1,
+      //     })
+      //   );
+      // } else if (searchByName !== "") {
+      //   dispatch(
+      //     findByName({
+      //       name: searchByName,
 
-            page: page + 1,
-          })
-        );
-      } else {
-        dispatch(getAllProduct(page + 1));
-      }
+      //       page: page + 1,
+      //     })
+      //   );
+      // } else {
+      //   dispatch(getAllProduct(page + 1));
+      // }
     }
   };
   const { openUpdateProductModal } = useSelector((s) => s.modal);

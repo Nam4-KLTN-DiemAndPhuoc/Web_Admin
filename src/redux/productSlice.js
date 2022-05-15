@@ -10,6 +10,7 @@ const initialState = {
   errorMessage: "",
   product: {},
   supplier: {},
+  isDeleted:false,
   page: 1,
   searchByCastegory: undefined,
   searchBySupplier: undefined,
@@ -139,11 +140,33 @@ export const findByCategoryAndSupplier = createAsyncThunk(
     }
   }
 );
+export const findByCategoryAndSupplierDeleted = createAsyncThunk(
+  "findByCategoryAndSupplierDeleted",
+  async (params, { rejectWithValue }) => {
+    try {
+      const res = await productApi.findByCategoryAndSupplierDeleted(params);
+      return res;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
 export const findByCategoryAndSupplierAndName = createAsyncThunk(
   "findByCategoryAndSupplierAndName",
   async (params, { rejectWithValue }) => {
     try {
       const res = await productApi.findByCategoryAndSupplierAndName(params);
+      return res;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+export const findByCategoryAndSupplierAndNameDeleted = createAsyncThunk(
+  "findByCategoryAndSupplierAndNameDeleted",
+  async (params, { rejectWithValue }) => {
+    try {
+      const res = await productApi.findByCategoryAndSupplierAndNameDeleted(params);
       return res;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -161,11 +184,33 @@ export const findByCategoryAndName = createAsyncThunk(
     }
   }
 );
+export const findByCategoryAndNameDeleted = createAsyncThunk(
+  "findByCategoryAndNameDeleted",
+  async (params, { rejectWithValue }) => {
+    try {
+      const res = await productApi.findByCategoryAndNameDeleted(params);
+      return res;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
 export const findByCategory = createAsyncThunk(
   "findByCategory",
   async (params, { rejectWithValue }) => {
     try {
       const res = await productApi.findByCategory(params);
+      return res;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+export const findByCategoryDeleted = createAsyncThunk(
+  "findByCategoryDeleted",
+  async (params, { rejectWithValue }) => {
+    try {
+      const res = await productApi.findByCategoryDeleted(params);
       return res;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -183,6 +228,17 @@ export const findBySupplier = createAsyncThunk(
     }
   }
 );
+export const findBySupplierDeleted = createAsyncThunk(
+  "findBySupplierDeleted",
+  async (params, { rejectWithValue }) => {
+    try {
+      const res = await productApi.findBySupplierDeleted(params);
+      return res;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
 export const findByName = createAsyncThunk(
   "findByName",
   async (params, { rejectWithValue }) => {
@@ -194,11 +250,33 @@ export const findByName = createAsyncThunk(
     }
   }
 );
+export const findByNameDeleted = createAsyncThunk(
+  "findByNameDeleted",
+  async (params, { rejectWithValue }) => {
+    try {
+      const res = await productApi.findByNameDeleted(params);
+      return res;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
 export const findBySupplierAndName = createAsyncThunk(
   "findBySupplierAndName",
   async (params, { rejectWithValue }) => {
     try {
       const res = await productApi.findBySupplierAndName(params);
+      return res;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+export const findBySupplierAndNameDeleted = createAsyncThunk(
+  "findBySupplierAndNameDeleted",
+  async (params, { rejectWithValue }) => {
+    try {
+      const res = await productApi.findBySupplierAndNameDeleted(params);
       return res;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -308,6 +386,18 @@ export const getSupplierById = createAsyncThunk(
     }
   }
 );
+export const getProductsDelete = createAsyncThunk(
+  "getProductsDelete",
+  async (params, { rejectWithValue }) => {
+    try {
+      const res = await productApi.getProductsDelete(params);
+
+      return res;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
 export const searchSupplier = createAsyncThunk(
   "searchSupplier",
   async (params, { rejectWithValue }) => {
@@ -330,14 +420,20 @@ const productSlice = createSlice({
     subPage: (state, action) => {
       if (state.page > 1) state.page = state.page - 1;
     },
-    setSearchByCastegory: (state, action) => {
-      state.searchByCastegory = action.payload;
+    // setSearchByCastegory: (state, action) => {
+    //   state.searchByCastegory = action.payload;
+    // },
+    // setSearchBySupplier: (state, action) => {
+    //   state.searchBySupplier = action.payload;
+    // },
+    // setSearchByName: (state, action) => {
+    //   state.searchByName = action.payload;
+    // },
+    setIsDeletedTrue: (state, action) => {
+      state.isDeleted = true;
     },
-    setSearchBySupplier: (state, action) => {
-      state.searchBySupplier = action.payload;
-    },
-    setSearchByName: (state, action) => {
-      state.searchByName = action.payload;
+    setIsDeletedFalse: (state, action) => {
+      state.isDeleted = false;
     },
     unAddAttributed: (state, action) => {
       state.isAddAttributed = false;
@@ -355,6 +451,13 @@ const productSlice = createSlice({
       state.products = action.payload;
     },
     [getAllProduct.rejected]: (state, action) => {
+      state.errorMessage = action.payload;
+    },
+    [getProductsDelete.pending]: (state, action) => {},
+    [getProductsDelete.fulfilled]: (state, action) => {
+      state.products = action.payload;
+    },
+    [getProductsDelete.rejected]: (state, action) => {
       state.errorMessage = action.payload;
     },
 
@@ -410,6 +513,8 @@ const productSlice = createSlice({
     [addSupplier.pending]: (state, action) => {},
     [addSupplier.fulfilled]: (state, action) => {
       state.suppliers.push(action.payload);
+      const s=state.suppliers
+      state.suppliers=s.reverse()
     },
     [addSupplier.rejected]: (state, action) => {
       state.errorMessage = action.payload;
@@ -421,11 +526,25 @@ const productSlice = createSlice({
     [findByCategoryAndSupplier.rejected]: (state, action) => {
       state.errorMessage = action.payload;
     },
+    [findByCategoryAndSupplierDeleted.pending]: (state, action) => {},
+    [findByCategoryAndSupplierDeleted.fulfilled]: (state, action) => {
+      state.products = action.payload;
+    },
+    [findByCategoryAndSupplierDeleted.rejected]: (state, action) => {
+      state.errorMessage = action.payload;
+    },
     [findByCategoryAndSupplierAndName.pending]: (state, action) => {},
     [findByCategoryAndSupplierAndName.fulfilled]: (state, action) => {
       state.products = action.payload;
     },
     [findByCategoryAndSupplierAndName.rejected]: (state, action) => {
+      state.errorMessage = action.payload;
+    },
+    [findByCategoryAndSupplierAndNameDeleted.pending]: (state, action) => {},
+    [findByCategoryAndSupplierAndNameDeleted.fulfilled]: (state, action) => {
+      state.products = action.payload;
+    },
+    [findByCategoryAndSupplierAndNameDeleted.rejected]: (state, action) => {
       state.errorMessage = action.payload;
     },
     [findByCategoryAndName.pending]: (state, action) => {},
@@ -435,11 +554,25 @@ const productSlice = createSlice({
     [findByCategoryAndName.rejected]: (state, action) => {
       state.errorMessage = action.payload;
     },
+    [findByCategoryAndNameDeleted.pending]: (state, action) => {},
+    [findByCategoryAndNameDeleted.fulfilled]: (state, action) => {
+      state.products = action.payload;
+    },
+    [findByCategoryAndNameDeleted.rejected]: (state, action) => {
+      state.errorMessage = action.payload;
+    },
     [findByCategory.pending]: (state, action) => {},
     [findByCategory.fulfilled]: (state, action) => {
       state.products = action.payload;
     },
     [findByCategory.rejected]: (state, action) => {
+      state.errorMessage = action.payload;
+    },
+    [findByCategoryDeleted.pending]: (state, action) => {},
+    [findByCategoryDeleted.fulfilled]: (state, action) => {
+      state.products = action.payload;
+    },
+    [findByCategoryDeleted.rejected]: (state, action) => {
       state.errorMessage = action.payload;
     },
     [findBySupplier.pending]: (state, action) => {},
@@ -449,6 +582,13 @@ const productSlice = createSlice({
     [findBySupplier.rejected]: (state, action) => {
       state.errorMessage = action.payload;
     },
+    [findBySupplierDeleted.pending]: (state, action) => {},
+    [findBySupplierDeleted.fulfilled]: (state, action) => {
+      state.products = action.payload;
+    },
+    [findBySupplierDeleted.rejected]: (state, action) => {
+      state.errorMessage = action.payload;
+    },
     [findByName.pending]: (state, action) => {},
     [findByName.fulfilled]: (state, action) => {
       state.products = action.payload;
@@ -456,11 +596,25 @@ const productSlice = createSlice({
     [findByName.rejected]: (state, action) => {
       state.errorMessage = action.payload;
     },
+    [findByNameDeleted.pending]: (state, action) => {},
+    [findByNameDeleted.fulfilled]: (state, action) => {
+      state.products = action.payload;
+    },
+    [findByNameDeleted.rejected]: (state, action) => {
+      state.errorMessage = action.payload;
+    },
     [findBySupplierAndName.pending]: (state, action) => {},
     [findBySupplierAndName.fulfilled]: (state, action) => {
       state.products = action.payload;
     },
     [findBySupplierAndName.rejected]: (state, action) => {
+      state.errorMessage = action.payload;
+    },
+    [findBySupplierAndNameDeleted.pending]: (state, action) => {},
+    [findBySupplierAndNameDeleted.fulfilled]: (state, action) => {
+      state.products = action.payload;
+    },
+    [findBySupplierAndNameDeleted.rejected]: (state, action) => {
       state.errorMessage = action.payload;
     },
     [addAttribute.pending]: (state, action) => {},
@@ -553,9 +707,11 @@ const { reducer, actions } = productSlice;
 export const {
   addPage,
   subPage,
-  setSearchByCastegory,
-  setSearchByName,
-  setSearchBySupplier,
+  // setSearchByCastegory,
+  // setSearchByName,
+  // setSearchBySupplier,'
+  setIsDeletedTrue,
+  setIsDeletedFalse,
   unAddAttributed,
   setCurrentProduct,
   setCurrentSupplier,
