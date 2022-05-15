@@ -56,7 +56,7 @@ function Row(props) {
     };
     if (
       window.confirm(
-        "Bạn có chắc chắn muốn chuyển trạng thái đơn hàng thành " +
+        "Bạn có chắc chắn muốn chuyển trạng thái đơn hàng "+row.id+" thành " +
           status +
           " không ?"
       )

@@ -9,7 +9,7 @@ import {
   TextField,
 } from "@mui/material";
 import Select from "react-select";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { openModal, openSupplierModal } from "../redux/modalSlice";
 import AddProductModal from "./modal/AddProductModal";
@@ -59,6 +59,12 @@ export default function SearchSupplier() {
   const handleAddSupplier = () => {
     dispatch(openSupplierModal());
   };
+  React.useEffect(() => {
+  
+  }, [
+
+    dispatch,suppliers, selectedCity, text,selectedDistrict,selectedWard
+  ]);
   return (
     <div>
       <AddSupplierModal check={isOpenSupplier} />
@@ -131,7 +137,7 @@ export default function SearchSupplier() {
           sx={{ ml: 1, flex: 1 }}
           placeholder="Search "
           inputProps={{ "aria-label": "search " }}
-          // value={text}
+          value={text}
           // onChange={(e) => setText(e.target.value)}
           onClick={handleClick}
           onChange={(event) => {
