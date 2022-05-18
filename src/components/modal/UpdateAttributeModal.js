@@ -37,6 +37,8 @@ export default function UpdateAttributeModal({ check }) {
   };
 
   const handleSaveAttribute = () => {
+    if( message == "" && severity == ""){
+   
     if (s > 0 || m > 0 || l > 0 || xl > 0) {
       const params = [
         { id:(attributes?.find(a=> a.size ==="S"))?.id ,size: "S", amount: s!== -1 ? s:(attributes?.find(a=> a.size ==="S")?.amount >0 ? attributes?.find(a=> a.size =="S")?.amount :0) , product: product?.product },
@@ -52,6 +54,7 @@ export default function UpdateAttributeModal({ check }) {
     setM(-1)
     setXL(-1)
     handleClose();
+  }
   };
   React.useEffect(() => {
  if( (s!= -1 && s<0)|| (m!= -1 && m<0)||(l!= -1 && l<0)||(xl!= -1 && xl<0)){

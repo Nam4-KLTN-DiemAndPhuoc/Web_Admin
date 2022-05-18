@@ -40,15 +40,24 @@ function AddSupplierModal({ check }) {
       dispatch(openDialog())
   
       dispatch(openSupplierModal());
+      setName("")
+      setPhone("")
+      setStreet("")
+      setMessage("")
+      setSeverity("")
     }
     else{
       setSeverity("error")
       setMessage("Vui lòng nhập hết các trường bên dưới!")
     }
+  
    
   };
   const handleClose = () => {
     setOpen(false);
+    setName("")
+    setPhone("")
+    setStreet("")
     setMessage("")
     setSeverity("")
     dispatch(openSupplierModal());
@@ -82,12 +91,7 @@ function AddSupplierModal({ check }) {
   const [phone, setPhone] = useState("");
   
   useEffect(() => {
-
-    if(name=="" || phone=="" || street=="" || selectedWard.label=="" || selectedDistrict.label=="" || selectedCity.label=="" ){
-
-      setSeverity("error")
-      setMessage("Vui lòng nhập hết các trường bên dưới")
-    }else if( phone !==""){
+     if( phone !==""){
       if(phoneValidator(phone) != ""){
         setSeverity("error")
         setMessage("Số điện thoại không hợp lệ")
@@ -95,6 +99,11 @@ function AddSupplierModal({ check }) {
         setSeverity("")
         setMessage("")
       }
+    }
+    else if(name=="" || phone=="" || street=="" || selectedWard?.label=="" || selectedDistrict?.label=="" || selectedCity?.label=="" ){
+
+      setSeverity("error")
+      setMessage("Vui lòng nhập hết các trường bên dưới")
     }
     else{
       setSeverity("")

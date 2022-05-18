@@ -28,7 +28,10 @@ function AddVoucherModal({ check }) {
   const [messaage, setMessage]= useState("")
   const dispatch = useDispatch();
   const handleOpen = () => {
-    if(codeVoucher!=="" && useAmount>=0 && discount>=0 && discount<=100){
+    
+
+    
+    if(codeVoucher!=="" && useAmount>0 && discount>0 && discount<=100){
       const data = {
         codeVoucher: codeVoucher,
         useAmount: useAmount,
@@ -40,13 +43,21 @@ function AddVoucherModal({ check }) {
   
       dispatch(openAddVoucherModal());
     }
-  
+    setMessage("")
+    setSeverity("")
+    setCodeVoucher("")
+    setUseAmount(0)
+    setDiscount(0)
+    
    
   };
   const handleClose = () => {
     setOpen(false);
     setMessage("")
     setSeverity("")
+    setCodeVoucher("")
+    setUseAmount(0)
+    setDiscount(0)
     dispatch(openAddVoucherModal());
   };
   const style = {

@@ -59,61 +59,69 @@ function ChildModal({ params }) {
   const [severity, setSeverity] = React.useState("");
   const [message, setMessage] = React.useState("");
   const handleOpen = async () => {
-    if (params?.price >0){
-      
- 
-    setOpen(true);
+    if( params?.price > 0 && params?.name !="" && params?.supplierId!== undefined && params?.categoryId!== undefined){
+      if (params?.price > 0) {
+        setOpen(true);
 
-    if (params?.images.length > 0) {
-      const url = "http://165.22.105.148:9191/api/user-service/auth/upload";
+        if (params?.images.length > 0) {
+          const url = "http://165.22.105.148:9191/api/user-service/auth/upload";
 
-      var files = [];
-      for (let i = 0; i < params.images.length; i++) {
-        var fd = new FormData();
-        fd.append("file", params.images[i]);
-        const config = {
-          headers: {
-            "content-type": "multipart/form-data",
-          },
-        };
+          var files = [];
+          for (let i = 0; i < params.images.length; i++) {
+            var fd = new FormData();
+            fd.append("file", params.images[i]);
+            const config = {
+              headers: {
+                "content-type": "multipart/form-data",
+              },
+            };
 
-        const res = await post(url, fd, config);
-        files.push(res);
+            const res = await post(url, fd, config);
+            files.push(res);
+          }
+          const data = {
+            name: params.name,
+            price: params.price,
+            avatar: files[0].data,
+
+            description: params.description,
+            categoryId: params.categoryId,
+            supplierId: params.supplierId,
+          };
+          const p = await dispatch(addProduct(data));
+
+          for (let j = 0; j < files.length; j++) {
+            let x = {
+              url: files[j].data,
+              product: p.payload.product,
+            };
+            dispatch(addListImage(x));
+          }
+        } else {
+          const data = {
+            name: params.name,
+            price: params.price,
+
+            description: params.description,
+            categoryId: params.categoryId,
+            supplierId: params.supplierId,
+          };
+          dispatch(addProduct(data));
+        }
       }
-      const data = {
-        name: params.name,
-        price: params.price,
-        avatar: files[0].data,
-
-        description: params.description,
-        categoryId: params.categoryId,
-        supplierId: params.supplierId,
-      };
-      const p = await dispatch(addProduct(data));
-
-      for (let j = 0; j < files.length; j++) {
-        let x = {
-          url: files[j].data,
-          product: p.payload.product,
-        };
-        dispatch(addListImage(x));
-      }
-    } else {
-      const data = {
-        name: params.name,
-        price: params.price,
-
-        description: params.description,
-        categoryId: params.categoryId,
-        supplierId: params.supplierId,
-      };
-      dispatch(addProduct(data));
     }
-  }
+    setSeverity("")
+    setMessage("")
   };
   const handleClose = () => {
     setOpen(false);
     dispatch(openModal());
+    setSeverity("");
+    setMessage("");
+    setL(0)
+    setXL(0)
+    setS(0)
+    setM(0)
   };
 
   const handleSaveAttribute = () => {
@@ -132,19 +140,21 @@ function ChildModal({ params }) {
   };
   const { isAddAttributed } = useSelector((s) => s.products);
   React.useEffect(() => {
- if( (s!= -1 && s<0)|| (m!= -1 && m<0)||(l!= -1 && l<0)||(xl!= -1 && xl<0)){
-      setSeverity("error")
-      setMessage("Vui lòng nhập số lớn hơn 0")
+    if (
+      (s != -1 && s < 0) ||
+      (m != -1 && m < 0) ||
+      (l != -1 && l < 0) ||
+      (xl != -1 && xl < 0)
+    ) {
+      setSeverity("error");
+      setMessage("Vui lòng nhập số lớn hơn 0");
+    } 
+    // else if()
+    else {
+      setSeverity("");
+      setMessage("");
     }
-    else{
-      setSeverity("")
-      setMessage("")
-    }
-  }, [
-
-    dispatch,s,m,l, xl, message, severity
-  ]);
-
+  }, [dispatch, s, m, l, xl, message, severity]);
 
   return (
     <React.Fragment>
@@ -153,11 +163,17 @@ function ChildModal({ params }) {
         title="Thông báo"
         content="Thêm thuộc tính sản phẩm thành công !"
       />
-      {isAddAttributed == false && (
+      {/* {isAddAttributed == false && (
         <Button variant="contained" onClick={handleOpen}>
           Thêm thuộc tính
         </Button>
-      )}
+      )} */}
+      {/* {console.log("test ", message, severity)} */}
+      
+        <Button variant="contained" onClick={handleOpen}>
+          Thêm thuộc tính
+        </Button>
+      
 
       <Modal
         hideBackdrop
@@ -170,9 +186,9 @@ function ChildModal({ params }) {
           <h2 id="parent-modal-title">Thêm thuộc tính</h2>
           <Box sx={{ width: "100% " }}>
             <FormControl fullWidth>
-            {message && severity && (
-              <MyAlert severity={severity} message={message} />
-            )}
+              {message && severity && (
+                <MyAlert severity={severity} message={message} />
+              )}
               <TextField
                 id="filled-basic"
                 label=" Size S - Số lượng"
@@ -253,6 +269,9 @@ export default function AddProductModal({ check }) {
     setFile("");
     setPrice(0);
     setDescription("");
+    setCategoryId(undefined);
+    setSupplierId(undefined);
+    setName("");
   };
 
   const onChangeFile = (e) => {
@@ -273,6 +292,9 @@ export default function AddProductModal({ check }) {
     setFile("");
     setPrice(0);
     setDescription("");
+    setCategoryId(undefined);
+    setSupplierId(undefined);
+    setName("");
   };
   const { products, categories, suppliers, isAddAttributed } = useSelector(
     (state) => state.products
@@ -295,22 +317,23 @@ export default function AddProductModal({ check }) {
     dispatch(openSupplierModal());
   };
   React.useEffect(() => {
-    if( price <=0 || categoryId ===null || supplierId === null || name==="" ){
-      setSeverity("error")
-      setMessage("Vui lòng nhập các trường bên dưới để tiếp tục")
-    } 
-      if( price <=0 ){
-      setSeverity("error")
-      setMessage("Vui lòng nhập giá lớn hơn 0")
+    console.log("XXX ", price, categoryId, supplierId, name);
+    if (
+      price <= 0 ||
+      categoryId == undefined ||
+      supplierId == undefined ||
+      name === ""
+    ) {
+      setSeverity("error");
+      setMessage("Vui lòng nhập các trường bên dưới để tiếp tục");
+    } else if (price < 0) {
+      setSeverity("error");
+      setMessage("Vui lòng nhập giá lớn hơn 0");
+    } else {
+      setSeverity("");
+      setMessage("");
     }
-    else{
-      setSeverity("")
-      setMessage("")
-    }
-  }, [
-
-    dispatch, message, severity,price,name,supplierId,categoryId
-  ]);
+  }, [dispatch, message, severity, price, name, supplierId, categoryId]);
   return (
     <div>
       <MyDialog
@@ -398,7 +421,7 @@ export default function AddProductModal({ check }) {
             <TextField
               id="filled-basic"
               label="Giá"
-              inputProps={{ type: 'number'}}
+              inputProps={{ type: "number" }}
               variant="filled"
               style={{ width: "100%", marginBottom: "5px" }}
               onChange={(e) => setPrice(e.target.value)}
@@ -435,10 +458,10 @@ export default function AddProductModal({ check }) {
 
           {/* <div style={{ float: "right" }}> */}
           <Stack direction="row" spacing={2} style={{ float: "right" }}>
-            {supplierId != null &&
+            {/* {supplierId != null &&
               categoryId != null &&
               name != "" &&
-              price > 0 && (
+              price > 0 && ( */}
                 <ChildModal
                   params={{
                     name: name,
@@ -450,7 +473,7 @@ export default function AddProductModal({ check }) {
                     categoryId: categoryId,
                   }}
                 />
-              )}
+              {/* )} */}
 
             {isAddAttributed == true && (
               <Button variant="contained" color="success" onClick={handleSave}>

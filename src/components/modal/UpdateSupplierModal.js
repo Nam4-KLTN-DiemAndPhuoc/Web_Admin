@@ -108,7 +108,7 @@ function UpdateSupplierModal({ check }) {
         aria-labelledby="child-modal-title"
         aria-describedby="child-modal-description"
       >
-        <Box sx={{ ...style, width: 650 }}>
+        <Box sx={{ ...style, width: 800 }}>
           <h2 id="parent-modal-title">Cập nhật nhà cung cấp</h2>
           {severity != "" && messaage != "" && (
             <MyAlert severity={severity} message={messaage} />

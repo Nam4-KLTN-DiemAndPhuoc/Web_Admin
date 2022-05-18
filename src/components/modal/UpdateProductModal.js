@@ -34,10 +34,7 @@ export default function UpdateProductModal({ check }) {
   const dispatch = useDispatch();
   const { products, images, categories, suppliers, isAddAttributed, product } =
     useSelector((state) => state.products);
-    // setName(product?.product?.name);
-    // setPrice(product?.product?.price);
-    // setDescription(product?.product?.description);
-    // setDiscount(product?.product?.discount);
+
   const [name, setName] = React.useState(product?.product?.name);
   const [description, setDescription] = React.useState(product?.product?.description);
   const [price, setPrice] = React.useState(product?.product?.price);
@@ -48,11 +45,18 @@ export default function UpdateProductModal({ check }) {
   const [image, setImage] = React.useState({});
   const [change, setChange] = React.useState(false);
   const handleClose = async () => {
+    setChange(false);
+    setPreviewImages([]);
+    setName("");
+    setDescription("");
+    setDiscount("");
+    setPrice("");
     dispatch(openUpdateProductModal());
   };
 
   const dialog = useSelector((s) => s.dialog);
   const handleSave = async () => {
+  
     var files = [];
     if (change === true && fileArray?.length > 0) {
       const url = "http://165.22.105.148:9191/api/user-service/auth/upload";
@@ -150,6 +154,13 @@ export default function UpdateProductModal({ check }) {
   
       dispatch,product, message, severity,price,name,discount
     ]);
+    React.useEffect(() => {
+        setName(product?.product?.name);
+    setPrice(product?.product?.price);
+    setDescription(product?.product?.description);
+    setDiscount(product?.product?.discount);
+    }, [product, dispatch]);
+     
 
   return (
     <div>
@@ -291,10 +302,11 @@ export default function UpdateProductModal({ check }) {
           </div>
 
           {/* <div style={{ float: "right" }}> */}
+        
           <Stack direction="row" spacing={2} style={{ float: "right" }}>
-            <Button variant="contained" color="success" onClick={handleSave}>
+          {( severity =="" && message=="") && (  <Button variant="contained" color="success" onClick={handleSave}>
               Lưu
-            </Button>
+            </Button>)}
 
             <Button variant="contained" color="error" onClick={handleClose}>
               Đóng
