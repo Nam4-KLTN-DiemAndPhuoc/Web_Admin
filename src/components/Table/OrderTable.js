@@ -71,7 +71,7 @@ function Row(props) {
           <IconButton
             aria-label="expand row"
             size="small"
-            onClick={(id) => handleClick(row.id)}
+            onClick={(id) => handleClick(row.id2)}
           >
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>

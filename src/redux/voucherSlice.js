@@ -1,7 +1,6 @@
 import { createAsyncThunk, createSlice, current } from "@reduxjs/toolkit";
 import voucherApi from "../api/voucherApi";
 
-
 const initialState = {
   vouchers: [],
   errorMessage: "",
@@ -59,39 +58,34 @@ const voucherSlice = createSlice({
   initialState,
 
   extraReducers: {
-    [getAllVoucher.pending]: (state, action) => {
-    },
+    [getAllVoucher.pending]: (state, action) => {},
     [getAllVoucher.fulfilled]: (state, action) => {
-      const s=action.payload
-      state.vouchers=s.reverse()
+      const s = action.payload;
+      state.vouchers = s.reverse();
     },
     [getAllVoucher.rejected]: (state, action) => {
       state.errorMessage = action.payload;
     },
-    [deleteVoucher.pending]: (state, action) => {
-    },
+    [deleteVoucher.pending]: (state, action) => {},
     [deleteVoucher.fulfilled]: (state, action) => {
       const u = state.vouchers.find((user) => user.id == action.payload.id);
       u.deleteAt = action.payload.deleteAt;
-
     },
     [deleteVoucher.rejected]: (state, action) => {
       state.errorMessage = action.payload;
     },
-    [searchVoucher.pending]: (state, action) => {
-    },
+    [searchVoucher.pending]: (state, action) => {},
     [searchVoucher.fulfilled]: (state, action) => {
       state.vouchers = action.payload;
     },
     [searchVoucher.rejected]: (state, action) => {
       state.errorMessage = action.payload;
     },
-    [addVoucher.pending]: (state, action) => {
-    },
+    [addVoucher.pending]: (state, action) => {},
     [addVoucher.fulfilled]: (state, action) => {
-     state.vouchers.push(action.payload);
-      const s=state.vouchers
-      state.vouchers=s.reverse()
+      const arr = state.vouchers.reverse();
+      arr.push(action.payload);
+      state.vouchers = arr.reverse();
     },
     [addVoucher.rejected]: (state, action) => {
       state.errorMessage = action.payload;
