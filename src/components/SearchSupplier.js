@@ -59,11 +59,13 @@ export default function SearchSupplier() {
   const handleAddSupplier = () => {
     dispatch(openSupplierModal());
   };
-  React.useEffect(() => {
-  
-  }, [
-
-    dispatch,suppliers, selectedCity, text,selectedDistrict,selectedWard
+  React.useEffect(() => {}, [
+    dispatch,
+    suppliers,
+    selectedCity,
+    text,
+    selectedDistrict,
+    selectedWard,
   ]);
   return (
     <div>
@@ -139,7 +141,7 @@ export default function SearchSupplier() {
           inputProps={{ "aria-label": "search " }}
           value={text}
           // onChange={(e) => setText(e.target.value)}
-          onClick={handleClick}
+          // onClick={handleClick}
           onChange={(event) => {
             setText(event.target.value);
           }}
