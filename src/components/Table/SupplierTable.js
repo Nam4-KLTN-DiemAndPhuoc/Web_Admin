@@ -65,7 +65,7 @@ export default function SupplierTable() {
     if (
       window.confirm(
         "Bạn có chắc chắn muốn xóa nhà cung cấp " +
-          suppliers.supplierName +
+          s?.supplierName +
           " không ?"
       )
     ) {

@@ -460,14 +460,9 @@ export default function SearchCategory() {
           placeholder="Search "
           inputProps={{ "aria-label": "search " }}
           onChange={(e) => setSearchByName(e.target.value)}
+          onClick={(e)=>{e.preventDefault()}}
         />
-        <IconButton
-          type="submit"
-          sx={{ p: "10px" }}
-          aria-label="search"
-        >
-          <SearchIcon />
-        </IconButton>
+       
       </Paper>
       <AddProductModal check={isOpen} />
     </div>
